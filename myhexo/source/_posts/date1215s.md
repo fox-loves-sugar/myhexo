@@ -1,7 +1,7 @@
 ---
 title: 常记Fifty
 date: 2020-12-14 13:14:21
-tags:
+tags: [python,docker]
 ---
 
 ### 1 linux查看端口命令

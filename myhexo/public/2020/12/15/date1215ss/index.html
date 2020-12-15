@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="The Start of my new time, 狐狸大大爱吃糖的博客">
+    <meta name="keywords" content="python垃圾回收机制, 狐狸大大爱吃糖的博客">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>The Start of my new time | 狐狸大大爱吃糖的博客</title>
+    <title>python垃圾回收机制 | 狐狸大大爱吃糖的博客</title>
     <link rel="icon" type="image/png" href="/myhexo/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/myhexo/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/myhexo/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/myhexo/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">The Start of my new time</h1>
+                    <h1 class="description center-align post-title">python垃圾回收机制</h1>
                 </div>
             </div>
         </div>
@@ -429,9 +429,21 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/myhexo/tags/python/">
+                                <span class="chip bg-color">python</span>
+                            </a>
+                        
+                            <a href="/myhexo/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/">
+                                <span class="chip bg-color">垃圾回收机制</span>
+                            </a>
+                        
+                            <a href="/myhexo/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/">
+                                <span class="chip bg-color">引用计数</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -464,7 +476,50 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>最黑暗的夜，成就最明亮的星。</p>
+                <ul>
+<li>本文根据内存管理机制，采用实例来验证内存管理机制，并提出了自己对于python内存管理机制的一些见解。</li>
+</ul>
+<h3 id="1-By-code"><a href="#1-By-code" class="headerlink" title="1 By code"></a>1 By code</h3><h4 id="1-1-引用计数-垃圾回收机制"><a href="#1-1-引用计数-垃圾回收机制" class="headerlink" title="1.1 引用计数+垃圾回收机制"></a>1.1 引用计数+垃圾回收机制</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">p1 = Person()</span><br><span class="line">p2 = p1</span><br><span class="line">print(<span class="string">&#x27;p1引用计数：&#x27;</span>, sys.getrefcount(p1))           <span class="comment"># p1引用计数： 3</span></span><br><span class="line"><span class="comment"># del p2</span></span><br><span class="line"><span class="comment"># print(&#x27;p1引用计数：&#x27;, sys.getrefcount(p1))         # p2引用计数： 2</span></span><br><span class="line"></span><br><span class="line">print(<span class="built_in">id</span>(p1))                                       <span class="comment"># 1901831032904</span></span><br><span class="line">print(<span class="built_in">id</span>(p2))                                       <span class="comment"># 1901831032904</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> p1 <span class="keyword">is</span> p2:</span><br><span class="line">    print(<span class="string">&#x27;yes&#x27;</span>)                                    <span class="comment"># yes</span></span><br><span class="line"></span><br><span class="line">print(sys.getsizeof(p1))                            <span class="comment"># 56 bites</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-分代回收"><a href="#1-2-分代回收" class="headerlink" title="1.2 分代回收"></a>1.2 分代回收</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">p = Person()</span><br><span class="line">d = Dog()</span><br><span class="line">p.pet = d</span><br><span class="line">d.master = p</span><br><span class="line"></span><br><span class="line">print(<span class="string">&#x27;p引用计数：&#x27;</span>, sys.getrefcount(p))           <span class="comment"># p引用计数： 3</span></span><br><span class="line">print(<span class="string">&#x27;d引用计数：&#x27;</span>, sys.getrefcount(d))           <span class="comment"># d引用计数： 3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">del</span> p</span><br><span class="line">print(<span class="string">&#x27;d引用计数：&#x27;</span>, sys.getrefcount(d))           <span class="comment"># d引用计数： 3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-Notice"><a href="#2-Notice" class="headerlink" title="2 Notice"></a>2 Notice</h3><h4 id="2-1-引用计数"><a href="#2-1-引用计数" class="headerlink" title="2.1 引用计数"></a>2.1 引用计数</h4><p>引用计数是编程语言总的一种内存管理技术，将资源的被引用次数保存起来。</p>
+<ul>
+<li>资源：可以是对象，内存或磁盘空间等</li>
+<li>def语句会删除对象的一个引用，这将导致该引用指向的对象的引用计数减1</li>
+<li>任何追踪或调试程序会给对象增加一个额外引用，这会推迟该对象被回收的时间</li>
+<li>由于两个或以上对象互相引用时，彼此引用计数不为0，造成循环应用而无法回收</li>
+</ul>
+<h4 id="2-2-标记-清除"><a href="#2-2-标记-清除" class="headerlink" title="2.2 标记-清除"></a>2.2 标记-清除</h4><ul>
+<li>标记清除分为两个阶段，首先标记对象（垃圾检测），然后清除垃圾（垃圾回收）</li>
+</ul>
+<h5 id="2-2-1-标记"><a href="#2-2-1-标记" class="headerlink" title="2.2.1 标记"></a>2.2.1 标记</h5><p>在此阶段，垃圾回收器会从跟对象开始遍历。</p>
+<p>每个可以从根对象访问到的对象都会被添加标识，这个对象被标识为可到达对象，可到达对象不会被清除。</p>
+<h5 id="2-2-2-清除"><a href="#2-2-2-清除" class="headerlink" title="2.2.2 清除"></a>2.2.2 清除</h5><p>在此阶段，垃圾回收器会对堆内存从头到尾进行线性遍历</p>
+<p>如果发现有对象没有被标识为可到达对象，那么就此对象内存回收</p>
+<p>之后将原来标记为可到达对象的标识抹掉，以便进行下一次垃圾回收操作</p>
+<h5 id="2-2-3-标记清除存在的问题"><a href="#2-2-3-标记清除存在的问题" class="headerlink" title="2.2.3 标记清除存在的问题"></a>2.2.3 标记清除存在的问题</h5><p>标记-清除算法的比较大的缺点就是垃圾收集后有可能会造成大量的内存碎片，其次由于需要遍历的内存节点较多时，每次回收都将花费时间在遍历节点过程中</p>
+<h5 id="2-2-4-注意事项"><a href="#2-2-4-注意事项" class="headerlink" title="2.2.4 注意事项"></a>2.2.4 注意事项</h5><ul>
+<li>collector </li>
+</ul>
+<p>垃圾收集器</p>
+<ul>
+<li>mutator</li>
+</ul>
+<p>指的是垃圾收集器之外的部分（比如当前的应用程序，可以直接被mutator直接访问到的对象，一般指静态—-&gt;全局变量）</p>
+<ul>
+<li>可到达对象</li>
+</ul>
+<p>所谓的可到达对象就是从根对象开始遍历，可以访问到的对象，也就是mutator(应用程序)正在使用的对象</p>
+<h4 id="2-3-分代回收"><a href="#2-3-分代回收" class="headerlink" title="2.3 分代回收"></a>2.3 分代回收</h4><ul>
+<li>由于嵌套引用无法被回收（分层，打标签）</li>
+</ul>
+<h5 id="2-3-1-核心思想"><a href="#2-3-1-核心思想" class="headerlink" title="2.3.1 核心思想"></a>2.3.1 核心思想</h5><p>分代是一种典型的以空间换时间的技术</p>
+<p>这种思想简单点说就是：对象存在时间越长，越可能不是垃圾，应该越少去收集</p>
+<p>分代是解决内存遍历需要太久时间而诞生的解决方案</p>
+<h5 id="2-3-2-分代回收的好处"><a href="#2-3-2-分代回收的好处" class="headerlink" title="2.3.2 分代回收的好处"></a>2.3.2 分代回收的好处</h5><p>分代回收可以减少标记-清除机制所带来的额外操作</p>
+<p>分代就是将回收对象分成数个代（青年代，中年代，老年代），每个代都是一个链表（集合）。当青年代满时，将触发清理所有三代，执行标记清除动作。之后，当中年代满时，将会触发清理中年代，老年代；最后，老年代触发后只会清理自己</p>
+<p>老年代的存活时间是最长的</p>
 
                 
             </div>
@@ -491,7 +546,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/15/myfirst/">https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/15/myfirst/</a>
+                    <a href="https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/15/date1215ss/">https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/15/date1215ss/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -528,7 +583,19 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
+                            
+                                <a href="/myhexo/tags/python/">
+                                    <span class="chip bg-color">python</span>
+                                </a>
+                            
+                                <a href="/myhexo/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/">
+                                    <span class="chip bg-color">垃圾回收机制</span>
+                                </a>
+                            
+                                <a href="/myhexo/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/">
+                                    <span class="chip bg-color">引用计数</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -696,48 +763,9 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
-            <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;Current
-            </div>
-            <div class="card">
-                <a href="/myhexo/2020/12/15/myfirst/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/myhexo/medias/featureimages/5.jpg" class="responsive-img" alt="The Start of my new time">
-                        
-                        <span class="card-title">The Start of my new time</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-15
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            狐 狸 大 大
-                            
-                        </span>
-                    </div>
-                </div>
-
-                
-            </div>
-        </div>
-        
-        
         <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
                 <a href="/myhexo/2020/12/15/date1215/">
                     <div class="card-image">
@@ -755,8 +783,53 @@
                         
                     </div>
                     <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-15
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            狐 狸 大 大
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/myhexo/tags/docker/">
+                        <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/myhexo/2020/12/14/date1215s/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/myhexo/medias/featureimages/8.jpg" class="responsive-img" alt="常记Fifty">
+                        
+                        <span class="card-title">常记Fifty</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-14
                             </span>
                         <span class="publish-author">
                             
@@ -765,6 +838,18 @@
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/myhexo/tags/docker/">
+                        <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/myhexo/tags/python/">
+                        <span class="chip bg-color">python</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -992,7 +1077,7 @@
 
 
 
-    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+    <a href="mailto:171767289@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
         <i class="fas fa-envelope-open"></i>
     </a>
 
@@ -1002,7 +1087,7 @@
 
 
 
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=171767289" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 171767289" data-position="top" data-delay="50">
         <i class="fab fa-qq"></i>
     </a>
 

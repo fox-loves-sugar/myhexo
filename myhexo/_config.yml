@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: https://qihanxibei.gitee.io/myhexo/
+url: https://foxes_love_sugar.gitee.io/myhexo
 root: /myhexo
 permalink: :year/:month/:day/:title/
 permalink_defaults:

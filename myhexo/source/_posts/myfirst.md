@@ -1,7 +1,7 @@
 ---
-title: myfirst
-date: 2020-10-30 07:12:49
+title: The Start of my new time
+date: 2020-12-15 13:14:21
 tags:
 ---
 
-大家好啊，这是我的第一篇博客
+最黑暗的夜，成就最明亮的星。

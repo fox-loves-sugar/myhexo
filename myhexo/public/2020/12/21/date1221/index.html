@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="python解释器, 狐狸大大爱吃糖的博客">
+    <meta name="keywords" content="位运算+数据库两种方式实现权限操作, 狐狸大大爱吃糖的博客">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>python解释器 | 狐狸大大爱吃糖的博客</title>
+    <title>位运算+数据库两种方式实现权限操作 | 狐狸大大爱吃糖的博客</title>
     <link rel="icon" type="image/png" href="/myhexo/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/myhexo/libs/awesome/css/all.css">
@@ -315,7 +315,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">python解释器</h1>
+                    <h1 class="description center-align post-title">位运算+数据库两种方式实现权限操作</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +431,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/myhexo/tags/python/">
-                                <span class="chip bg-color">python</span>
+                            <a href="/myhexo/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/">
+                                <span class="chip bg-color">位运算</span>
                             </a>
                         
-                            <a href="/myhexo/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/">
-                                <span class="chip bg-color">解释器</span>
+                            <a href="/myhexo/tags/%E6%9D%83%E9%99%90/">
+                                <span class="chip bg-color">权限</span>
                             </a>
                         
                     </div>
@@ -451,7 +451,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-12-16
+                    2020-12-21
                 </div>
                 
 
@@ -472,55 +472,73 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="1-语言相关"><a href="#1-语言相关" class="headerlink" title="1 语言相关"></a>1 语言相关</h3><h4 id="1-1-解释型和编译型语言的区别"><a href="#1-1-解释型和编译型语言的区别" class="headerlink" title="1.1 解释型和编译型语言的区别"></a>1.1 解释型和编译型语言的区别</h4><ul>
-<li>解释型语言：Python  JavaScript  PHP  Shell  MATLAB等</li>
-<li>编译型语言：C、C++、Goloang、Pascal（Delphi）、汇编等</li>
+                <h3 id="1-数据库实现权限操作"><a href="#1-数据库实现权限操作" class="headerlink" title="1 数据库实现权限操作"></a>1 数据库实现权限操作</h3><ul>
+<li>既是管理又是超级管理员的需要五表关联</li>
 </ul>
-<h5 id="1-1-1-解释型语言通用解释"><a href="#1-1-1-解释型语言通用解释" class="headerlink" title="1.1.1 解释型语言通用解释"></a>1.1.1 解释型语言通用解释</h5><p>通常不用对源代码进行编译，通过解释器一边执行一边转换，需要哪些源代码就转换哪些源代码，不生成可执行程序</p>
-<p>这种编程语言称为解释型语言，使用的转换工具称为解释器</p>
-<p>但是个解释型语言太过于以来解释器环境，而解释器本身就是一个虚拟环境，没运行代码前就申请内存、开辟空间启动解释器，这样其实过于消耗内存影响效率。</p>
-<ul>
-<li>特点：写代码的效率高，立竿见影看效果，调bug比较轻松，跨平台性好，但是执行效率不行</li>
+<h4 id="1-1-四表联动"><a href="#1-1-四表联动" class="headerlink" title="1.1 四表联动"></a>1.1 四表联动</h4><p><img src="imgs/image-20201220205537082.png" alt="image-20201220205537082"></p>
+<h4 id="1-2-表设计"><a href="#1-2-表设计" class="headerlink" title="1.2 表设计"></a>1.2 表设计</h4><ul>
+<li>models.py</li>
 </ul>
-<h5 id="1-1-2-编译型语言通用解释"><a href="#1-1-2-编译型语言通用解释" class="headerlink" title="1.1.2 编译型语言通用解释"></a>1.1.2 编译型语言通用解释</h5><p>编译型语言写完后需要进行打包和编译，这会导致编写代码的过程见效慢，但是打包之后就省事了，以后都可以直接使用，也就是说编译后的使用方法非常方便，不像解释型语言，虽然写代码见效快，但是执行起来慢。</p>
-<p>编译语言要求必须提前将所有的源代码一次性转换为二进制指令，生成一个可执行程序，比如像C这样的编程语言就是编译型语言，它所使用的工具称为编译器，也就是经常在linux下安装程序时需要的GCC或者G++</p>
-<ul>
-<li>特点：执行效率高，但是调bug真的很麻烦</li>
-</ul>
-<h5 id="1-1-3-二进制指令"><a href="#1-1-3-二进制指令" class="headerlink" title="1.1.3 二进制指令"></a>1.1.3 二进制指令</h5><p>二进制指令也就是机器码，是CPU能够识别的硬件层面的代码，简陋的硬件（古老的单机片）只能使用几十个指令，强大的硬件（PC、智能手机）能使用成百上千个指令</p>
-<h4 id="1-2-p2-和-p3-的区别"><a href="#1-2-p2-和-p3-的区别" class="headerlink" title="1.2 p2 和 p3 的区别"></a>1.2 p2 和 p3 的区别</h4><ul>
-<li>p2：print为语句，p3：print为方法</li>
-<li>p2：默认为Ascii编码，P3：默认为Unicode(utf-8)</li>
-<li>p2：除法结果为整数，p3：除法结果为浮点数</li>
-<li>p2：默认四个字节表示一个字符，p3：默认二个字节表示一个字符</li>
-<li>p2：map方法返回list，p3：map方法返回iteration</li>
-</ul>
-<h4 id="1-3-解释器的种类及特点"><a href="#1-3-解释器的种类及特点" class="headerlink" title="1.3 解释器的种类及特点"></a>1.3 解释器的种类及特点</h4><ul>
-<li>CPython：C语言开发的，是使用最广的解释器，具有GIL全局解释器锁</li>
-<li>IPython：基于CPython的交互式解释器，功能与CPython无异</li>
-<li>Jython：试运行在Java平台上的Python解释器，可以直接把Python的代码编译成Java字节执行，但CPython没有Jython的垃圾回收机制</li>
-<li>IronPython：IronPython和Jython类似，只不过IronPython是运行在微软.NET平台上的Python解释器，可以直接把Python代码编译成.Net字节码</li>
-<li>PyPy：另一个Python解释器，目标是执行效率采用JIT技术，对Python代码进行动态编译，提高执行效率</li>
-</ul>
-<h4 id="1-4-列举几个PEP8规范"><a href="#1-4-列举几个PEP8规范" class="headerlink" title="1.4 列举几个PEP8规范"></a>1.4 列举几个PEP8规范</h4><h5 id="1-4-1-RFC"><a href="#1-4-1-RFC" class="headerlink" title="1.4.1 RFC"></a>1.4.1 RFC</h5><ul>
-<li>专门用来定义网路请求的标准文档，是一系列以编号排定的文件，文件收集了有关互联网相关信息</li>
-</ul>
-<h5 id="1-4-2-PEP8"><a href="#1-4-2-PEP8" class="headerlink" title="1.4.2 PEP8"></a>1.4.2 PEP8</h5><ul>
-<li>每一级缩进使用4个空格，每行最大字符限制为79个，除了长导包语句，和url地址</li>
-<li>导入通常在分开的行，不推荐同行导入多个模块</li>
-<li>不能使用单字符(1 I O)作为变量名</li>
-<li>类的首字母大写，函数的首字母小写</li>
-</ul>
-<h3 id="2-代码验证"><a href="#2-代码验证" class="headerlink" title="2 代码验证"></a>2 代码验证</h3><h4 id="2-1-切换盘符—-命令行"><a href="#2-1-切换盘符—-命令行" class="headerlink" title="2.1 切换盘符—-命令行"></a>2.1 切换盘符—-命令行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\&gt;F:</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 权限系统四标关联：角色表、用户表、节点表、权限表</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 角色表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RoleModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    description = models.CharField(max_length=<span class="number">100</span>, null=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;role_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用户表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    username = models.CharField(max_length=<span class="number">30</span>, unique=<span class="literal">True</span>, verbose_name=<span class="string">&#x27;唯一注册用户名&#x27;</span>)</span><br><span class="line">    password = models.CharField(max_length=<span class="number">256</span>)</span><br><span class="line">    role = models.ForeignKey(RoleModel, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;user_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 节点表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NodeModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    description = models.CharField(max_length=<span class="number">100</span>, null=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;node_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 权限表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Authority</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    role_id = models.ForeignKey(RoleModel, on_delete=models.CASCADE)</span><br><span class="line">    node_id = models.ForeignKey(NodeModel, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;authority&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="2-2-不同解释器验证高并发"><a href="#2-2-不同解释器验证高并发" class="headerlink" title="2.2 不同解释器验证高并发"></a>2.2 不同解释器验证高并发</h4><ul>
-<li>使用全局解释器GIL的原因：高并发情况下，逻辑是没问题的，但是编辑器存在问题</li>
+<h4 id="1-3-所需参数"><a href="#1-3-所需参数" class="headerlink" title="1.3 所需参数"></a>1.3 所需参数</h4><ul>
+<li>role.id（用户角色id）</li>
+<li>type（前端节点类型）</li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">num = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_it</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="keyword">global</span> num</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000000</span>):		<span class="comment"># 人为构造高并发</span></span><br><span class="line">        num -= n</span><br><span class="line">        num += n</span><br><span class="line">    print(num)</span><br><span class="line"></span><br><span class="line">threads = [</span><br><span class="line">    threading.Thread(target=change_it, args=(<span class="number">8</span>,)),</span><br><span class="line">    <span class="comment"># 加()是调用，声明变量是不需要的，args里面是元祖类型，不写就是默认整形</span></span><br><span class="line">    threading.Thread(target=change_it, args=(<span class="number">10</span>,))</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">[t.start() <span class="keyword">for</span> t <span class="keyword">in</span> threads]</span><br><span class="line"><span class="comment"># 列推性能是普通for循环的7倍左右，因为在底层中，是不需要引用计数的</span></span><br><span class="line">[t.join() <span class="keyword">for</span> t <span class="keyword">in</span> threads]</span><br><span class="line"><span class="comment"># 阻塞，所有线程结束，子线程才会结束</span></span><br><span class="line">print(num)</span><br><span class="line"><span class="comment"># 对于pypy来说，可以解决高并发问题，性能远超于Cpython</span></span><br><span class="line"><span class="comment"># 高并发情况下，逻辑是没问题的，但是编辑器存在问题，要加GIL锁</span></span><br></pre></td></tr></table></figure>
+<h4 id="1-4-middleware-py"><a href="#1-4-middleware-py" class="headerlink" title="1.4 middleware.py"></a>1.4 middleware.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.utils.deprecation <span class="keyword">import</span> MiddlewareMixin</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------------------------四表联合判断权限 middleware</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChooseMiddleWare</span>(<span class="params">MiddlewareMixin</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        path = request.path_info</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> (<span class="string">&#x27;/user/test/&#x27;</span>):</span><br><span class="line">            user_info = decodeToken(request)</span><br><span class="line">            role_id = user_info.get(<span class="string">&#x27;role_id&#x27;</span>)</span><br><span class="line">            node_id = Authority.objects.<span class="built_in">filter</span>(role_id_id=role_id).first().node_id_id</span><br><span class="line">            <span class="comment"># 根据前端设置的传递类型来选择</span></span><br><span class="line">            t = request.GET.get(<span class="string">&#x27;type&#x27;</span>)</span><br><span class="line">            <span class="comment"># t ---------------&gt; str</span></span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">int</span>(t) == node_id:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;拦截&#x27;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="2-3-不同解释器效果"><a href="#2-3-不同解释器效果" class="headerlink" title="2.3 不同解释器效果"></a>2.3 不同解释器效果</h4><h5 id="2-3-1-Cpython-效果"><a href="#2-3-1-Cpython-效果" class="headerlink" title="2.3.1 Cpython 效果"></a>2.3.1 Cpython 效果</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">2</span><br><span class="line">-6</span><br><span class="line">-6</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">-30</span><br><span class="line">-30</span><br><span class="line">-30</span><br></pre></td></tr></table></figure>
+<h4 id="1-5-settings-py"><a href="#1-5-settings-py" class="headerlink" title="1.5 settings.py"></a>1.5 settings.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">&#x27;django.middleware.security.SecurityMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders.middleware.CorsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.common.CommonMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># mysql middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMysqlMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># redis middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoRedisMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># mongo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMongoMiddleWare&#x27;，</span></span><br><span class="line">    <span class="comment"># userinfo middleware</span></span><br><span class="line">    <span class="string">&#x27;userapp.middlewares.ChooseMiddleWare&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWareB&#x27;</span></span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
 
-<h5 id="2-3-2-pypy3-效果"><a href="#2-3-2-pypy3-效果" class="headerlink" title="2.3.2 pypy3 效果"></a>2.3.2 pypy3 效果</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">-30</span><br><span class="line">-30</span><br><span class="line">-30</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;pypy3 test.py</span><br><span class="line">10</span><br><span class="line">10</span><br><span class="line">10</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;pypy3 test.py</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<h3 id="2-二进制位运算实现权限操作"><a href="#2-二进制位运算实现权限操作" class="headerlink" title="2 二进制位运算实现权限操作"></a>2 二进制位运算实现权限操作</h3><h4 id="2-1-位运算前言"><a href="#2-1-位运算前言" class="headerlink" title="2.1 位运算前言"></a>2.1 位运算前言</h4><ul>
+<li><p>十进制换成二进制，bin(10)           ————————&gt;           ob1010</p>
+</li>
+<li><p>python中用 0b表示二进制。逢 2 进 1</p>
+</li>
+<li><p>0b010 只有第二个有权限</p>
+</li>
+<li><p>一样就是1， 不一样就是0</p>
+</li>
+<li><p>django内的操作都是二进制流的操作</p>
+</li>
+<li><p>位运算权限，采用的是内置节点！</p>
+</li>
+<li><p>位运算和科学计算相比，位运算性能更好！</p>
+</li>
+</ul>
+<p>0b001 &amp; 0b010</p>
+<blockquote>
+<p>0</p>
+</blockquote>
+<p>0b001 &amp; 0b001</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<p>100 &amp; 1</p>
+<blockquote>
+<p>0</p>
+</blockquote>
+<p>101 &amp; 1</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<p>0b10 &amp; 0b01</p>
+<blockquote>
+<p>0</p>
+</blockquote>
+<p>0b11 &amp; 0b01</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<h4 id="2-2-表设计"><a href="#2-2-表设计" class="headerlink" title="2.2 表设计"></a>2.2 表设计</h4><ul>
+<li>只需要两张表</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 角色表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RoleModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    description = models.CharField(max_length=<span class="number">100</span>, null=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;role_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用户表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    username = models.CharField(max_length=<span class="number">30</span>, unique=<span class="literal">True</span>, verbose_name=<span class="string">&#x27;唯一注册用户名&#x27;</span>)</span><br><span class="line">    password = models.CharField(max_length=<span class="number">256</span>)</span><br><span class="line">    role = models.ForeignKey(RoleModel, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;user_model&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-middleware-py"><a href="#2-3-middleware-py" class="headerlink" title="2.3 middleware.py"></a>2.3 middleware.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 中间件---------------------------------------------------------------------------------</span></span><br><span class="line"><span class="keyword">from</span> django.utils.deprecation <span class="keyword">import</span> MiddlewareMixin</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChooseMiddleWareB</span>(<span class="params">MiddlewareMixin</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        path = request.path_info</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> (<span class="string">&#x27;/user/test/&#x27;</span>):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 这里设置位运算，默认权限对应关系是      role_id   拥有权限   权限id  ? 这样只能比对，做不了增值，可以倒过来想！</span></span><br><span class="line">            <span class="comment">#                                    1 ----------------- 1  0b100</span></span><br><span class="line">            <span class="comment">#                                    2 ----------------- 2  0b010</span></span><br><span class="line">            <span class="comment">#                                    3 ----------------- 3  0b001</span></span><br><span class="line">            <span class="comment"># 这里我想考虑一个角色多个权限的设置</span></span><br><span class="line">            <span class="comment"># 如果一个角色同时拥有两个或三个（此次设置三个权限）呢？存在什么关系？（可以进行权限叠加啊，后续研究）,利用循环，看多少个权限？</span></span><br><span class="line">            <span class="comment">#   role_id         拥有权限        权限id</span></span><br><span class="line">            <span class="comment">#      1                            1     0b001             1</span></span><br><span class="line">            <span class="comment">#      1                            2     0b010 （+1）       2</span></span><br><span class="line">            <span class="comment">#      1                            1,2   0b011 （+2)        3</span></span><br><span class="line">            <span class="comment">#      1                            3     0b100 （+3）       4</span></span><br><span class="line">            <span class="comment">#      1                            1,3   0b101 （+4）       5</span></span><br><span class="line">            <span class="comment">#      1                            2,3   0b110 （+5）       6</span></span><br><span class="line">            <span class="comment">#      1                           1,2,3  0b111 （+6）       7</span></span><br><span class="line">            <span class="comment">#  所以给用户设定权限就可以了，这里给用户设定权限，角色1 全有 则为7， 角色2 有12权限 则为3， 角色3 只有第三个权限，则为4</span></span><br><span class="line">            <span class="built_in">type</span> = <span class="built_in">int</span>(request.GET.get(<span class="string">&#x27;type&#x27;</span>))</span><br><span class="line">            user_info = decodeToken(request)</span><br><span class="line">            print(user_info)</span><br><span class="line">            role_id = user_info.get(<span class="string">&#x27;role_id&#x27;</span>)</span><br><span class="line">            <span class="comment"># 角色1 拥有权限</span></span><br><span class="line">            <span class="comment"># first_permision = 0b111</span></span><br><span class="line">            <span class="comment"># # 角色2 拥有权限</span></span><br><span class="line">            <span class="comment"># second_permision = 0b011</span></span><br><span class="line">            <span class="comment"># # 角色3 拥有权限</span></span><br><span class="line">            <span class="comment"># third_permision = 0b100</span></span><br><span class="line">            <span class="comment"># 相加就能看到共有几种权限啦！</span></span><br><span class="line">            <span class="comment"># 我们给角色1设定有三种权限，角色2设定有一，二两种权限，角色3设定只有第三种权限</span></span><br><span class="line">            permision_dic = &#123;<span class="number">1</span>: <span class="number">0b111</span>, <span class="number">2</span>: <span class="number">0b011</span>, <span class="number">3</span>: <span class="number">0b100</span>&#125;</span><br><span class="line">            type_dic = &#123;<span class="number">1</span>: <span class="number">0b001</span>, <span class="number">2</span>: <span class="number">0b010</span>, <span class="number">3</span>: <span class="number">0b100</span>&#125;</span><br><span class="line">            <span class="keyword">if</span> type_dic[<span class="built_in">type</span>] &amp; permision_dic[role_id] == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;没有权限访问&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-settings-py"><a href="#2-4-settings-py" class="headerlink" title="2.4 settings.py"></a>2.4 settings.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">&#x27;django.middleware.security.SecurityMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders.middleware.CorsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.common.CommonMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># mysql middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMysqlMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># redis middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoRedisMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># mongo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMongoMiddleWare&#x27;，</span></span><br><span class="line">    <span class="comment"># userinfo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWare&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;userapp.middlewares.ChooseMiddleWareB&#x27;</span></span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+
 
 
                 
@@ -548,7 +566,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/16/date1216/">https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/16/date1216/</a>
+                    <a href="https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/21/date1221/">https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/21/date1221/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -586,12 +604,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/myhexo/tags/python/">
-                                    <span class="chip bg-color">python</span>
+                                <a href="/myhexo/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/">
+                                    <span class="chip bg-color">位运算</span>
                                 </a>
                             
-                                <a href="/myhexo/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/">
-                                    <span class="chip bg-color">解释器</span>
+                                <a href="/myhexo/tags/%E6%9D%83%E9%99%90/">
+                                    <span class="chip bg-color">权限</span>
                                 </a>
                             
                         </div>
@@ -761,17 +779,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
-                <a href="/myhexo/2020/12/17/date1217/">
+                <a href="/myhexo/2020/12/21/date1221/">
                     <div class="card-image">
                         
                         
-                        <img src="/myhexo/medias/featureimages/6.jpg" class="responsive-img" alt="钉钉机器人发送数据session储存问题解决">
+                        <img src="/myhexo/medias/featureimages/19.jpg" class="responsive-img" alt="位运算+数据库两种方式实现权限操作">
                         
-                        <span class="card-title">钉钉机器人发送数据session储存问题解决</span>
+                        <span class="card-title">位运算+数据库两种方式实现权限操作</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -781,9 +800,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-17
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-21
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -792,15 +811,16 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/myhexo/tags/session/">
-                        <span class="chip bg-color">session</span>
+                    <a href="/myhexo/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/">
+                        <span class="chip bg-color">位运算</span>
                     </a>
                     
-                    <a href="/myhexo/tags/%E9%92%89%E9%92%89%E6%9C%BA%E5%99%A8%E4%BA%BA/">
-                        <span class="chip bg-color">钉钉机器人</span>
+                    <a href="/myhexo/tags/%E6%9D%83%E9%99%90/">
+                        <span class="chip bg-color">权限</span>
                     </a>
                     
                 </div>
@@ -814,13 +834,13 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/myhexo/2020/12/15/date1215/">
+                <a href="/myhexo/2020/12/21/date1221s/">
                     <div class="card-image">
                         
                         
-                        <img src="/myhexo/medias/featureimages/1.jpg" class="responsive-img" alt="Docker初识">
+                        <img src="/myhexo/medias/featureimages/13.jpg" class="responsive-img" alt="celery定时任务+redis有序集合实现实时访问">
                         
-                        <span class="card-title">Docker初识</span>
+                        <span class="card-title">celery定时任务+redis有序集合实现实时访问</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -831,7 +851,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-21
                             </span>
                         <span class="publish-author">
                             
@@ -844,8 +864,16 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/myhexo/tags/docker/">
-                        <span class="chip bg-color">docker</span>
+                    <a href="/myhexo/tags/celery/">
+                        <span class="chip bg-color">celery</span>
+                    </a>
+                    
+                    <a href="/myhexo/tags/redis/">
+                        <span class="chip bg-color">redis</span>
+                    </a>
+                    
+                    <a href="/myhexo/tags/%E5%AE%9E%E6%97%B6%E8%AE%BF%E9%97%AE/">
+                        <span class="chip bg-color">实时访问</span>
                     </a>
                     
                 </div>

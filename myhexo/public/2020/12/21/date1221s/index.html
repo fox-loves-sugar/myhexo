@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="python解释器, 狐狸大大爱吃糖的博客">
+    <meta name="keywords" content="celery定时任务+redis有序集合实现实时访问, 狐狸大大爱吃糖的博客">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>python解释器 | 狐狸大大爱吃糖的博客</title>
+    <title>celery定时任务+redis有序集合实现实时访问 | 狐狸大大爱吃糖的博客</title>
     <link rel="icon" type="image/png" href="/myhexo/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/myhexo/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/myhexo/medias/featureimages/19.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/myhexo/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">python解释器</h1>
+                    <h1 class="description center-align post-title">celery定时任务+redis有序集合实现实时访问</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +431,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/myhexo/tags/python/">
-                                <span class="chip bg-color">python</span>
+                            <a href="/myhexo/tags/celery/">
+                                <span class="chip bg-color">celery</span>
                             </a>
                         
-                            <a href="/myhexo/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/">
-                                <span class="chip bg-color">解释器</span>
+                            <a href="/myhexo/tags/redis/">
+                                <span class="chip bg-color">redis</span>
+                            </a>
+                        
+                            <a href="/myhexo/tags/%E5%AE%9E%E6%97%B6%E8%AE%BF%E9%97%AE/">
+                                <span class="chip bg-color">实时访问</span>
                             </a>
                         
                     </div>
@@ -451,7 +455,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-12-16
+                    2020-12-21
                 </div>
                 
 
@@ -472,55 +476,53 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="1-语言相关"><a href="#1-语言相关" class="headerlink" title="1 语言相关"></a>1 语言相关</h3><h4 id="1-1-解释型和编译型语言的区别"><a href="#1-1-解释型和编译型语言的区别" class="headerlink" title="1.1 解释型和编译型语言的区别"></a>1.1 解释型和编译型语言的区别</h4><ul>
-<li>解释型语言：Python  JavaScript  PHP  Shell  MATLAB等</li>
-<li>编译型语言：C、C++、Goloang、Pascal（Delphi）、汇编等</li>
+                <h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h3><h4 id="1-1-项目理解"><a href="#1-1-项目理解" class="headerlink" title="1.1 项目理解"></a>1.1 项目理解</h4><ul>
+<li>数据冗余</li>
 </ul>
-<h5 id="1-1-1-解释型语言通用解释"><a href="#1-1-1-解释型语言通用解释" class="headerlink" title="1.1.1 解释型语言通用解释"></a>1.1.1 解释型语言通用解释</h5><p>通常不用对源代码进行编译，通过解释器一边执行一边转换，需要哪些源代码就转换哪些源代码，不生成可执行程序</p>
-<p>这种编程语言称为解释型语言，使用的转换工具称为解释器</p>
-<p>但是个解释型语言太过于以来解释器环境，而解释器本身就是一个虚拟环境，没运行代码前就申请内存、开辟空间启动解释器，这样其实过于消耗内存影响效率。</p>
+<p>数据冗余是指数据之间的重复，也可以说是同一数据存储在不同数据文件中的现象。可以说增加数据的独立性和减少数据冗余是企业范围信息资源管理和大规模信息系统获得成功的前提条件。</p>
+<p>数据冗余或者信息冗余是生产、生活所必然存在的行为，没有好与不好的总体倾向。</p>
 <ul>
-<li>特点：写代码的效率高，立竿见影看效果，调bug比较轻松，跨平台性好，但是执行效率不行</li>
+<li>如何解决重复ip？</li>
 </ul>
-<h5 id="1-1-2-编译型语言通用解释"><a href="#1-1-2-编译型语言通用解释" class="headerlink" title="1.1.2 编译型语言通用解释"></a>1.1.2 编译型语言通用解释</h5><p>编译型语言写完后需要进行打包和编译，这会导致编写代码的过程见效慢，但是打包之后就省事了，以后都可以直接使用，也就是说编译后的使用方法非常方便，不像解释型语言，虽然写代码见效快，但是执行起来慢。</p>
-<p>编译语言要求必须提前将所有的源代码一次性转换为二进制指令，生成一个可执行程序，比如像C这样的编程语言就是编译型语言，它所使用的工具称为编译器，也就是经常在linux下安装程序时需要的GCC或者G++</p>
+<p>去重，可以采用唯一索引。采用实时数据，mysql，mongofb，不适合实现这次的效果。采用redis数据库，可以利用其五大数据类型中的有序集合。</p>
 <ul>
-<li>特点：执行效率高，但是调bug真的很麻烦</li>
+<li>如何理解可变，不可变？</li>
 </ul>
-<h5 id="1-1-3-二进制指令"><a href="#1-1-3-二进制指令" class="headerlink" title="1.1.3 二进制指令"></a>1.1.3 二进制指令</h5><p>二进制指令也就是机器码，是CPU能够识别的硬件层面的代码，简陋的硬件（古老的单机片）只能使用几十个指令，强大的硬件（PC、智能手机）能使用成百上千个指令</p>
-<h4 id="1-2-p2-和-p3-的区别"><a href="#1-2-p2-和-p3-的区别" class="headerlink" title="1.2 p2 和 p3 的区别"></a>1.2 p2 和 p3 的区别</h4><ul>
-<li>p2：print为语句，p3：print为方法</li>
-<li>p2：默认为Ascii编码，P3：默认为Unicode(utf-8)</li>
-<li>p2：除法结果为整数，p3：除法结果为浮点数</li>
-<li>p2：默认四个字节表示一个字符，p3：默认二个字节表示一个字符</li>
-<li>p2：map方法返回list，p3：map方法返回iteration</li>
+<p>唯一性大于有序就是可变类型；元祖，数字，字符串，不可变集合是不可变类型。但实质上，集合是可变的。</p>
+<ul>
+<li>集合底层实现？</li>
 </ul>
-<h4 id="1-3-解释器的种类及特点"><a href="#1-3-解释器的种类及特点" class="headerlink" title="1.3 解释器的种类及特点"></a>1.3 解释器的种类及特点</h4><ul>
-<li>CPython：C语言开发的，是使用最广的解释器，具有GIL全局解释器锁</li>
-<li>IPython：基于CPython的交互式解释器，功能与CPython无异</li>
-<li>Jython：试运行在Java平台上的Python解释器，可以直接把Python的代码编译成Java字节执行，但CPython没有Jython的垃圾回收机制</li>
-<li>IronPython：IronPython和Jython类似，只不过IronPython是运行在微软.NET平台上的Python解释器，可以直接把Python代码编译成.Net字节码</li>
-<li>PyPy：另一个Python解释器，目标是执行效率采用JIT技术，对Python代码进行动态编译，提高执行效率</li>
+<p>哈希实现，字典实现，一种没有value的字典，集合中的，expire不能设置集合中某个键值对的过期时间！</p>
+<ul>
+<li>对于时间戳的理解：一分钟时间戳差值60</li>
 </ul>
-<h4 id="1-4-列举几个PEP8规范"><a href="#1-4-列举几个PEP8规范" class="headerlink" title="1.4 列举几个PEP8规范"></a>1.4 列举几个PEP8规范</h4><h5 id="1-4-1-RFC"><a href="#1-4-1-RFC" class="headerlink" title="1.4.1 RFC"></a>1.4.1 RFC</h5><ul>
-<li>专门用来定义网路请求的标准文档，是一系列以编号排定的文件，文件收集了有关互联网相关信息</li>
+<h4 id="1-2-项目整体思路"><a href="#1-2-项目整体思路" class="headerlink" title="1.2 项目整体思路"></a>1.2 项目整体思路</h4><h5 id="1-2-1-redis-有序集合"><a href="#1-2-1-redis-有序集合" class="headerlink" title="1.2.1 redis 有序集合"></a>1.2.1 redis 有序集合</h5><ul>
+<li>有序集合存储访问ip数据</li>
 </ul>
-<h5 id="1-4-2-PEP8"><a href="#1-4-2-PEP8" class="headerlink" title="1.4.2 PEP8"></a>1.4.2 PEP8</h5><ul>
-<li>每一级缩进使用4个空格，每行最大字符限制为79个，除了长导包语句，和url地址</li>
-<li>导入通常在分开的行，不推荐同行导入多个模块</li>
-<li>不能使用单字符(1 I O)作为变量名</li>
-<li>类的首字母大写，函数的首字母小写</li>
+<p>有序集合中的元素是唯一的，而且可以采用score（本项目用时间戳作为排序分数）进行排序。可以保证访问ip不会重复，而且可以实时更新访问ip的score（因为存入相同元素的时候，虽然不会重复，但是score会随着当前时间更新）</p>
+<h5 id="1-2-2-middleware中间件"><a href="#1-2-2-middleware中间件" class="headerlink" title="1.2.2  middleware中间件"></a>1.2.2  middleware中间件</h5><ul>
+<li>middleware实现接口检测</li>
 </ul>
-<h3 id="2-代码验证"><a href="#2-代码验证" class="headerlink" title="2 代码验证"></a>2 代码验证</h3><h4 id="2-1-切换盘符—-命令行"><a href="#2-1-切换盘符—-命令行" class="headerlink" title="2.1 切换盘符—-命令行"></a>2.1 切换盘符—-命令行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\&gt;F:</span><br></pre></td></tr></table></figure>
+<p>每次请求之前采用中间件对每个接口进行检测（但是值得注意的是，不检测redis存储的接口）</p>
+<h5 id="1-2-3-celery定时任务"><a href="#1-2-3-celery定时任务" class="headerlink" title="1.2.3 celery定时任务"></a>1.2.3 celery定时任务</h5><ul>
+<li>celery定时任务实现删除过期元素，每60秒检测一次有无过期元素（和前一分钟的时间戳进行对比），有的话就删除（删除采用的是redis中的范围删除）</li>
+</ul>
+<h3 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2 代码实现"></a>2 代码实现</h3><h4 id="2-1-django端"><a href="#2-1-django端" class="headerlink" title="2.1 django端"></a>2.1 django端</h4><h5 id="2-1-1-middlewares-py"><a href="#2-1-1-middlewares-py" class="headerlink" title="2.1.1 middlewares.py"></a>2.1.1 middlewares.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line">d = redis.Redis(host=<span class="string">&#x27;127.0.0.1&#x27;</span>, port=<span class="number">6379</span>, db=<span class="number">7</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MemberOnlineMiddleWare</span>(<span class="params">MiddlewareMixin</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        path = request.path_info</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">not</span> <span class="keyword">in</span> (<span class="string">&#x27;/user/online/&#x27;</span>):</span><br><span class="line">            ip = request.META[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]</span><br><span class="line">            <span class="keyword">import</span> time</span><br><span class="line">            d.zadd(<span class="string">&#x27;onlines&#x27;</span>, &#123;ip: <span class="built_in">int</span>(time.time())&#125;)</span><br></pre></td></tr></table></figure>
 
-<h4 id="2-2-不同解释器验证高并发"><a href="#2-2-不同解释器验证高并发" class="headerlink" title="2.2 不同解释器验证高并发"></a>2.2 不同解释器验证高并发</h4><ul>
-<li>使用全局解释器GIL的原因：高并发情况下，逻辑是没问题的，但是编辑器存在问题</li>
+<h5 id="2-1-2-celery-task-celery-lk-py"><a href="#2-1-2-celery-task-celery-lk-py" class="headerlink" title="2.1.2 celery_task/celery_lk.py"></a>2.1.2 celery_task/celery_lk.py</h5><ul>
+<li>值得注意的是，celery版本不能用4xx，要用5.0.0</li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">num = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_it</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="keyword">global</span> num</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000000</span>):		<span class="comment"># 人为构造高并发</span></span><br><span class="line">        num -= n</span><br><span class="line">        num += n</span><br><span class="line">    print(num)</span><br><span class="line"></span><br><span class="line">threads = [</span><br><span class="line">    threading.Thread(target=change_it, args=(<span class="number">8</span>,)),</span><br><span class="line">    <span class="comment"># 加()是调用，声明变量是不需要的，args里面是元祖类型，不写就是默认整形</span></span><br><span class="line">    threading.Thread(target=change_it, args=(<span class="number">10</span>,))</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">[t.start() <span class="keyword">for</span> t <span class="keyword">in</span> threads]</span><br><span class="line"><span class="comment"># 列推性能是普通for循环的7倍左右，因为在底层中，是不需要引用计数的</span></span><br><span class="line">[t.join() <span class="keyword">for</span> t <span class="keyword">in</span> threads]</span><br><span class="line"><span class="comment"># 阻塞，所有线程结束，子线程才会结束</span></span><br><span class="line">print(num)</span><br><span class="line"><span class="comment"># 对于pypy来说，可以解决高并发问题，性能远超于Cpython</span></span><br><span class="line"><span class="comment"># 高并发情况下，逻辑是没问题的，但是编辑器存在问题，要加GIL锁</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">import</span> os,  sys</span><br><span class="line">CELERY_BASE_DIR = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line">print(sys.path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># celery项目中的所有导包地址, 都是以CELERY_BASE_DIR为基准设定.</span></span><br><span class="line"><span class="comment"># 执行celery命令时, 也需要进入CELERY_BASE_DIR目录执行.</span></span><br><span class="line"><span class="keyword">import</span> django</span><br><span class="line">sys.path.insert(<span class="number">0</span>, os.path.join(CELERY_BASE_DIR, <span class="string">&#x27;../gogogo&#x27;</span>))</span><br><span class="line">os.environ.setdefault(<span class="string">&quot;DJANGO_SETTINGS_MODULE&quot;</span>, <span class="string">&quot;gogogo.settings&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义celery实例, 需要的参数, 1, 实例名, 2, 任务发布位置, 3, 结果保存位置</span></span><br><span class="line">app = Celery(<span class="string">&#x27;celery&#x27;</span>,</span><br><span class="line">             broker=<span class="string">&#x27;redis://127.0.0.1:6379/11&#x27;</span>,   <span class="comment"># 任务存放的地方</span></span><br><span class="line">             backend=<span class="string">&#x27;redis://127.0.0.1:6379/12&#x27;</span>,   <span class="comment"># 结果存放的地方</span></span><br><span class="line">             include=[<span class="string">&#x27;celery_task.tasks_beat&#x27;</span>])</span><br><span class="line">            <span class="comment"># 由于上面配置了路径，所以导入时需要注意</span></span><br><span class="line"></span><br><span class="line">app.conf.update(</span><br><span class="line">   result_expires=<span class="number">3600</span>,        <span class="comment">#执行结果放到redis里，一个小时没人取就丢弃</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> celery.schedules <span class="keyword">import</span> crontab</span><br><span class="line"><span class="comment"># 配置定时任务</span></span><br><span class="line">app.conf.beat_schedule = &#123;</span><br><span class="line">    <span class="string">&#x27;add-every-60-seconds&#x27;</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;task&#x27;</span>: <span class="string">&#x27;celery_task.tasks_beat.online_members&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;schedule&#x27;</span>: <span class="number">60.0</span>,</span><br><span class="line">        <span class="comment"># 每60秒发送一次任务</span></span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">app.conf.timezone = <span class="string">&#x27;Asia/Shanghai&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">   app.start()</span><br></pre></td></tr></table></figure>
 
-<h4 id="2-3-不同解释器效果"><a href="#2-3-不同解释器效果" class="headerlink" title="2.3 不同解释器效果"></a>2.3 不同解释器效果</h4><h5 id="2-3-1-Cpython-效果"><a href="#2-3-1-Cpython-效果" class="headerlink" title="2.3.1 Cpython 效果"></a>2.3.1 Cpython 效果</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">2</span><br><span class="line">-6</span><br><span class="line">-6</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">-30</span><br><span class="line">-30</span><br><span class="line">-30</span><br></pre></td></tr></table></figure>
+<h5 id="2-1-3-celery-task-tasks-beat-py"><a href="#2-1-3-celery-task-tasks-beat-py" class="headerlink" title="2.1.3 celery_task/tasks_beat.py"></a>2.1.3 celery_task/tasks_beat.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import, unicode_literals</span><br><span class="line"><span class="comment"># @app.task 指定将这个函数的执行交给celery异步执行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 相当于装饰器，将下面函数打包给app</span></span><br><span class="line"><span class="keyword">from</span> celery_task.celery_lk <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.task(bind=True)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">online_members</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">import</span> redis, time</span><br><span class="line">    d = redis.Redis(host=<span class="string">&#x27;127.0.0.1&#x27;</span>, port=<span class="number">6379</span>, db=<span class="number">7</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line">    after = <span class="built_in">int</span>(time.time()) - <span class="number">60</span></span><br><span class="line">    d.zremrangebyscore(<span class="string">&#x27;onlines&#x27;</span>, <span class="number">0</span>, after)</span><br></pre></td></tr></table></figure>
 
-<h5 id="2-3-2-pypy3-效果"><a href="#2-3-2-pypy3-效果" class="headerlink" title="2.3.2 pypy3 效果"></a>2.3.2 pypy3 效果</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;python test.py</span><br><span class="line">-30</span><br><span class="line">-30</span><br><span class="line">-30</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;pypy3 test.py</span><br><span class="line">10</span><br><span class="line">10</span><br><span class="line">10</span><br><span class="line"></span><br><span class="line">f:\monthForth\DjangosNew\django19\django19&gt;pypy3 test.py</span><br><span class="line">0</span><br><span class="line">0</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<h5 id="2-1-4-views-py"><a href="#2-1-4-views-py" class="headerlink" title="2.1.4 views.py"></a>2.1.4 views.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OnlineView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        <span class="keyword">import</span> redis, time</span><br><span class="line">        d = redis.Redis(host=<span class="string">&#x27;127.0.0.1&#x27;</span>, port=<span class="number">6379</span>, db=<span class="number">7</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line">        num = d.zcard(<span class="string">&#x27;onlines&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;访问人数&#x27;</span>, <span class="string">&#x27;num&#x27;</span>:num&#125;)</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-1-5-urls-py"><a href="#2-1-5-urls-py" class="headerlink" title="2.1.5 urls.py"></a>2.1.5 urls.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> userapp <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">&#x27;register/&#x27;</span>, views.RegisterView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;login/&#x27;</span>, views.LoginView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;dingding/&#x27;</span>, views.DingDingView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;test/&#x27;</span>, views.TestAPIView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;online/&#x27;</span>, views.OnlineView.as_view()),</span><br><span class="line"></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-1-6-settings-py"><a href="#2-1-6-settings-py" class="headerlink" title="2.1.6 settings.py"></a>2.1.6 settings.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">&#x27;django.middleware.security.SecurityMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders.middleware.CorsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.common.CommonMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># mysql middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMysqlMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># redis middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoRedisMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># mongo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMongoMiddleWare&#x27;，</span></span><br><span class="line">    <span class="comment"># userinfo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWareB&#x27;,</span></span><br><span class="line">    <span class="comment"># members online</span></span><br><span class="line">    <span class="string">&#x27;userapp.middlewares.MemberOnlineMiddleWare&#x27;</span>,</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Vue端"><a href="#2-2-Vue端" class="headerlink" title="2.2 Vue端"></a>2.2 Vue端</h3><h5 id="2-2-1-headers-vue"><a href="#2-2-1-headers-vue" class="headerlink" title="2.2.1 headers.vue"></a>2.2.1 headers.vue</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">        &lt;div&gt;&lt;a style&#x3D;&quot;float:right&quot; @click&#x3D;&quot;outLogin&quot;&gt;注销登录&lt;&#x2F;a&gt;</span><br><span class="line">          &lt;h3 style&#x3D;&quot;margin-top:20px&quot;&gt;           </span><br><span class="line">          欢迎你</span><br><span class="line">           &lt;a-icon type&#x3D;&quot;smile&quot; theme&#x3D;&quot;outlined&quot; style&#x3D;&quot;font-size:20px;color:blue&quot;&#x2F;&gt;&amp;ensp;</span><br><span class="line">          &#123;&#123;username&#125;&#125;</span><br><span class="line">            &lt;a-icon type&#x3D;&quot;fire&quot; style&#x3D;&quot;font-size:25px;color:blue&quot;&#x2F;&gt;&amp;ensp;</span><br><span class="line">            实时人数：&#123;&#123;number&#125;&#125;</span><br><span class="line">          &lt;&#x2F;h3&gt;         </span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; get_members_online &#125; from &#39;@&#x2F;http&#x2F;apis&#39;</span><br><span class="line">export default&#123;</span><br><span class="line">    data()&#123;</span><br><span class="line">        return&#123;</span><br><span class="line">          username:this.$route.query.username,</span><br><span class="line">          number:&#39;&#39;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      outLogin()&#123;</span><br><span class="line">        localStorage.removeItem(&#39;token&#39;)</span><br><span class="line">        localStorage.removeItem(&#39;username&#39;)</span><br><span class="line">        localStorage.removeItem(&#39;uid&#39;)</span><br><span class="line">        alert(&#39;注销登录成功，稍后为您跳转登录页面&#39;)</span><br><span class="line">        this.$router.push(&#39;&#x2F;login&#39;)</span><br><span class="line">      &#125;,</span><br><span class="line">      getOnline()&#123;</span><br><span class="line">        get_members_online().then(res&#x3D;&gt;&#123;</span><br><span class="line">          console.log(res)</span><br><span class="line">          this.number &#x3D; res.num</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    created()&#123;</span><br><span class="line">      window.setInterval(this.getOnline, 5000)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
 
 
                 
@@ -548,7 +550,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/16/date1216/">https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/16/date1216/</a>
+                    <a href="https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/21/date1221s/">https://foxes_love_sugar.gitee.io/myhexo/myhexo/2020/12/21/date1221s/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -586,12 +588,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/myhexo/tags/python/">
-                                    <span class="chip bg-color">python</span>
+                                <a href="/myhexo/tags/celery/">
+                                    <span class="chip bg-color">celery</span>
                                 </a>
                             
-                                <a href="/myhexo/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/">
-                                    <span class="chip bg-color">解释器</span>
+                                <a href="/myhexo/tags/redis/">
+                                    <span class="chip bg-color">redis</span>
+                                </a>
+                            
+                                <a href="/myhexo/tags/%E5%AE%9E%E6%97%B6%E8%AE%BF%E9%97%AE/">
+                                    <span class="chip bg-color">实时访问</span>
                                 </a>
                             
                         </div>
@@ -765,13 +771,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/myhexo/2020/12/17/date1217/">
+                <a href="/myhexo/2020/12/21/date1221/">
                     <div class="card-image">
                         
                         
-                        <img src="/myhexo/medias/featureimages/6.jpg" class="responsive-img" alt="钉钉机器人发送数据session储存问题解决">
+                        <img src="/myhexo/medias/featureimages/19.jpg" class="responsive-img" alt="位运算+数据库两种方式实现权限操作">
                         
-                        <span class="card-title">钉钉机器人发送数据session储存问题解决</span>
+                        <span class="card-title">位运算+数据库两种方式实现权限操作</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -782,7 +788,7 @@
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-17
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-21
                         </span>
                         <span class="publish-author">
                             
@@ -795,12 +801,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/myhexo/tags/session/">
-                        <span class="chip bg-color">session</span>
+                    <a href="/myhexo/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/">
+                        <span class="chip bg-color">位运算</span>
                     </a>
                     
-                    <a href="/myhexo/tags/%E9%92%89%E9%92%89%E6%9C%BA%E5%99%A8%E4%BA%BA/">
-                        <span class="chip bg-color">钉钉机器人</span>
+                    <a href="/myhexo/tags/%E6%9D%83%E9%99%90/">
+                        <span class="chip bg-color">权限</span>
                     </a>
                     
                 </div>
@@ -814,13 +820,13 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/myhexo/2020/12/15/date1215/">
+                <a href="/myhexo/2020/12/20/date1220/">
                     <div class="card-image">
                         
                         
-                        <img src="/myhexo/medias/featureimages/1.jpg" class="responsive-img" alt="Docker初识">
+                        <img src="/myhexo/medias/featureimages/0.jpg" class="responsive-img" alt="三种数据库实现限流+安全防护">
                         
-                        <span class="card-title">Docker初识</span>
+                        <span class="card-title">三种数据库实现限流+安全防护</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -831,7 +837,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-20
                             </span>
                         <span class="publish-author">
                             
@@ -844,8 +850,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/myhexo/tags/docker/">
-                        <span class="chip bg-color">docker</span>
+                    <a href="/myhexo/tags/%E9%99%90%E6%B5%81/">
+                        <span class="chip bg-color">限流</span>
+                    </a>
+                    
+                    <a href="/myhexo/tags/%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4/">
+                        <span class="chip bg-color">安全防护</span>
                     </a>
                     
                 </div>

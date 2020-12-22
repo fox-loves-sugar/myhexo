@@ -522,8 +522,47 @@
 
 <h5 id="2-1-6-settings-py"><a href="#2-1-6-settings-py" class="headerlink" title="2.1.6 settings.py"></a>2.1.6 settings.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">&#x27;django.middleware.security.SecurityMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders.middleware.CorsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.common.CommonMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># mysql middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMysqlMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># redis middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoRedisMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># mongo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMongoMiddleWare&#x27;，</span></span><br><span class="line">    <span class="comment"># userinfo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWareB&#x27;,</span></span><br><span class="line">    <span class="comment"># members online</span></span><br><span class="line">    <span class="string">&#x27;userapp.middlewares.MemberOnlineMiddleWare&#x27;</span>,</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-2-Vue端"><a href="#2-2-Vue端" class="headerlink" title="2.2 Vue端"></a>2.2 Vue端</h3><h5 id="2-2-1-headers-vue"><a href="#2-2-1-headers-vue" class="headerlink" title="2.2.1 headers.vue"></a>2.2.1 headers.vue</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">        &lt;div&gt;&lt;a style&#x3D;&quot;float:right&quot; @click&#x3D;&quot;outLogin&quot;&gt;注销登录&lt;&#x2F;a&gt;</span><br><span class="line">          &lt;h3 style&#x3D;&quot;margin-top:20px&quot;&gt;           </span><br><span class="line">          欢迎你</span><br><span class="line">           &lt;a-icon type&#x3D;&quot;smile&quot; theme&#x3D;&quot;outlined&quot; style&#x3D;&quot;font-size:20px;color:blue&quot;&#x2F;&gt;&amp;ensp;</span><br><span class="line">          &#123;&#123;username&#125;&#125;</span><br><span class="line">            &lt;a-icon type&#x3D;&quot;fire&quot; style&#x3D;&quot;font-size:25px;color:blue&quot;&#x2F;&gt;&amp;ensp;</span><br><span class="line">            实时人数：&#123;&#123;number&#125;&#125;</span><br><span class="line">          &lt;&#x2F;h3&gt;         </span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; get_members_online &#125; from &#39;@&#x2F;http&#x2F;apis&#39;</span><br><span class="line">export default&#123;</span><br><span class="line">    data()&#123;</span><br><span class="line">        return&#123;</span><br><span class="line">          username:this.$route.query.username,</span><br><span class="line">          number:&#39;&#39;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">      outLogin()&#123;</span><br><span class="line">        localStorage.removeItem(&#39;token&#39;)</span><br><span class="line">        localStorage.removeItem(&#39;username&#39;)</span><br><span class="line">        localStorage.removeItem(&#39;uid&#39;)</span><br><span class="line">        alert(&#39;注销登录成功，稍后为您跳转登录页面&#39;)</span><br><span class="line">        this.$router.push(&#39;&#x2F;login&#39;)</span><br><span class="line">      &#125;,</span><br><span class="line">      getOnline()&#123;</span><br><span class="line">        get_members_online().then(res&#x3D;&gt;&#123;</span><br><span class="line">          console.log(res)</span><br><span class="line">          this.number &#x3D; res.num</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    created()&#123;</span><br><span class="line">      window.setInterval(this.getOnline, 5000)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
-
+<h3 id="2-2-Vue端"><a href="#2-2-Vue端" class="headerlink" title="2.2 Vue端"></a>2.2 Vue端</h3><h5 id="2-2-1-headers-vue"><a href="#2-2-1-headers-vue" class="headerlink" title="2.2.1 headers.vue"></a>2.2.1 headers.vue</h5><pre><code class="vue">&lt;template&gt;
+        &lt;div&gt;&lt;a style=&quot;float:right&quot; @click=&quot;outLogin&quot;&gt;注销登录&lt;/a&gt;
+          &lt;h3 style=&quot;margin-top:20px&quot;&gt;           
+          欢迎你
+           &lt;a-icon type=&quot;smile&quot; theme=&quot;outlined&quot; style=&quot;font-size:20px;color:blue&quot;/&gt;&amp;ensp;
+          &#123;&#123;username&#125;&#125;
+            &lt;a-icon type=&quot;fire&quot; style=&quot;font-size:25px;color:blue&quot;/&gt;&amp;ensp;
+            实时人数：&#123;&#123;number&#125;&#125;
+          &lt;/h3&gt;         
+        &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+import &#123; get_members_online &#125; from &#39;@/http/apis&#39;
+export default&#123;
+    data()&#123;
+        return&#123;
+          username:this.$route.query.username,
+          number:&#39;&#39;
+        &#125;
+    &#125;,
+    methods:&#123;
+      outLogin()&#123;
+        localStorage.removeItem(&#39;token&#39;)
+        localStorage.removeItem(&#39;username&#39;)
+        localStorage.removeItem(&#39;uid&#39;)
+        alert(&#39;注销登录成功，稍后为您跳转登录页面&#39;)
+        this.$router.push(&#39;/login&#39;)
+      &#125;,
+      getOnline()&#123;
+        get_members_online().then(res=&gt;&#123;
+          console.log(res)
+          this.number = res.num
+        &#125;)
+      &#125;
+    &#125;,
+    created()&#123;
+      window.setInterval(this.getOnline, 5000)
+    &#125;
+&#125;
+&lt;/script&gt;
+</code></pre>
 
                 
             </div>
@@ -820,13 +859,13 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/myhexo/2020/12/20/date1220/">
+                <a href="/myhexo/2020/12/21/date1222/">
                     <div class="card-image">
                         
                         
-                        <img src="/myhexo/medias/featureimages/0.jpg" class="responsive-img" alt="三种数据库实现限流+安全防护">
+                        <img src="/myhexo/medias/featureimages/5.jpg" class="responsive-img" alt="MongoDB+Echarts+DWebSocket">
                         
-                        <span class="card-title">三种数据库实现限流+安全防护</span>
+                        <span class="card-title">MongoDB+Echarts+DWebSocket</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -837,7 +876,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-20
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-21
                             </span>
                         <span class="publish-author">
                             
@@ -850,12 +889,16 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/myhexo/tags/%E9%99%90%E6%B5%81/">
-                        <span class="chip bg-color">限流</span>
+                    <a href="/myhexo/tags/MongoDB/">
+                        <span class="chip bg-color">MongoDB</span>
                     </a>
                     
-                    <a href="/myhexo/tags/%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4/">
-                        <span class="chip bg-color">安全防护</span>
+                    <a href="/myhexo/tags/Echarts/">
+                        <span class="chip bg-color">Echarts</span>
+                    </a>
+                    
+                    <a href="/myhexo/tags/DWebSocket/">
+                        <span class="chip bg-color">DWebSocket</span>
                     </a>
                     
                 </div>

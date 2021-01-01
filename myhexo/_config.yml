@@ -14,7 +14,7 @@ timezone: Asia/Shanghai
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
 # url: https://fox-loves-sugar.github.io/myhexo
-source: https://github.com/fox-loves-sugar/myhexo.git
+url: https://github.com/fox-loves-sugar/myhexo.git
 root: /myhexo
 permalink: :year/:month/:day/:title/
 permalink_defaults:

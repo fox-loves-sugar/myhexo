@@ -9,7 +9,7 @@ subtitle: '爱枫林'
 # keywords:
 author: 狐 狸 大 大
 language: zh-CN
-timezone: Asia/Shanghai
+# timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
@@ -79,10 +79,10 @@ meta_generator: true
 ## Hexo uses Moment.js to parse and display date
 ## You can customize the date format as defined in
 ## http://momentjs.com/docs/#/displaying/format/
-date_format: YYYY-MM-DD
-time_format: HH:mm:ss
+# date_format: YYYY-MM-DD
+# time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
+# updated_option: 'mtime'
 
 # Pagination
 ## Set per_page to 0 to disable pagination

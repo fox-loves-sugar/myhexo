@@ -9,7 +9,7 @@ description: ''
 keywords:
 author: 狐 狸 大 大
 language: zh-CN
-timezone: ''
+timezone: 'Africa/Nairobi'
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'

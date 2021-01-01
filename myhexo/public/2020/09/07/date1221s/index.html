@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>celery定时任务+redis有序集合实现实时访问</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="1 概述1.1 项目理解
+数据冗余
+
+数据冗余是指数据之间的重复，也可以说是同一数据存储在不同数据文件中的现象。可以说增加数据的独立性和减少数据冗余是企业范围信息资源管理和大规模信息系统获得成功的前提条件。
+数据冗余或者信息冗余是生产、生活所必然存在的行为，没有好与不好的总体倾向。
+
+如何解决重复i">
+  
+  
+  <meta property="og:title" content="celery定时任务+redis有序集合实现实时访问"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        celery定时任务+redis有序集合实现实时访问
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2020-09-07T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-09-07
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/celery/">celery</a>·<a href="/myhexo/tags/redis/">redis</a>·<a href="/myhexo/tags/实时访问/">实时访问</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-text">1 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E9%A1%B9%E7%9B%AE%E7%90%86%E8%A7%A3"><span class="toc-text">1.1 项目理解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E9%A1%B9%E7%9B%AE%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF"><span class="toc-text">1.2 项目整体思路</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-1-redis-%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"><span class="toc-text">1.2.1 redis 有序集合</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-2-middleware%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-text">1.2.2  middleware中间件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-3-celery%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="toc-text">1.2.3 celery定时任务</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">2 代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-django%E7%AB%AF"><span class="toc-text">2.1 django端</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-1-middlewares-py"><span class="toc-text">2.1.1 middlewares.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-2-celery-task-celery-lk-py"><span class="toc-text">2.1.2 celery_task&#x2F;celery_lk.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-3-celery-task-tasks-beat-py"><span class="toc-text">2.1.3 celery_task&#x2F;tasks_beat.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-4-views-py"><span class="toc-text">2.1.4 views.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-5-urls-py"><span class="toc-text">2.1.5 urls.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-6-settings-py"><span class="toc-text">2.1.6 settings.py</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Vue%E7%AB%AF"><span class="toc-text">2.2 Vue端</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-1-headers-vue"><span class="toc-text">2.2.1 headers.vue</span></a></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h3 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h3><h4 id="1-1-项目理解"><a href="#1-1-项目理解" class="headerlink" title="1.1 项目理解"></a>1.1 项目理解</h4><ul>
+<li>数据冗余</li>
+</ul>
+<p>数据冗余是指数据之间的重复，也可以说是同一数据存储在不同数据文件中的现象。可以说增加数据的独立性和减少数据冗余是企业范围信息资源管理和大规模信息系统获得成功的前提条件。</p>
+<p>数据冗余或者信息冗余是生产、生活所必然存在的行为，没有好与不好的总体倾向。</p>
+<ul>
+<li>如何解决重复ip？</li>
+</ul>
+<p>去重，可以采用唯一索引。采用实时数据，mysql，mongofb，不适合实现这次的效果。采用redis数据库，可以利用其五大数据类型中的有序集合。</p>
+<ul>
+<li>如何理解可变，不可变？</li>
+</ul>
+<p>唯一性大于有序就是可变类型；元祖，数字，字符串，不可变集合是不可变类型。但实质上，集合是可变的。</p>
+<ul>
+<li>集合底层实现？</li>
+</ul>
+<p>哈希实现，字典实现，一种没有value的字典，集合中的，expire不能设置集合中某个键值对的过期时间！</p>
+<ul>
+<li>对于时间戳的理解：一分钟时间戳差值60</li>
+</ul>
+<h4 id="1-2-项目整体思路"><a href="#1-2-项目整体思路" class="headerlink" title="1.2 项目整体思路"></a>1.2 项目整体思路</h4><h5 id="1-2-1-redis-有序集合"><a href="#1-2-1-redis-有序集合" class="headerlink" title="1.2.1 redis 有序集合"></a>1.2.1 redis 有序集合</h5><ul>
+<li>有序集合存储访问ip数据</li>
+</ul>
+<p>有序集合中的元素是唯一的，而且可以采用score（本项目用时间戳作为排序分数）进行排序。可以保证访问ip不会重复，而且可以实时更新访问ip的score（因为存入相同元素的时候，虽然不会重复，但是score会随着当前时间更新）</p>
+<h5 id="1-2-2-middleware中间件"><a href="#1-2-2-middleware中间件" class="headerlink" title="1.2.2  middleware中间件"></a>1.2.2  middleware中间件</h5><ul>
+<li>middleware实现接口检测</li>
+</ul>
+<p>每次请求之前采用中间件对每个接口进行检测（但是值得注意的是，不检测redis存储的接口）</p>
+<h5 id="1-2-3-celery定时任务"><a href="#1-2-3-celery定时任务" class="headerlink" title="1.2.3 celery定时任务"></a>1.2.3 celery定时任务</h5><ul>
+<li>celery定时任务实现删除过期元素，每60秒检测一次有无过期元素（和前一分钟的时间戳进行对比），有的话就删除（删除采用的是redis中的范围删除）</li>
+</ul>
+<h3 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2 代码实现"></a>2 代码实现</h3><h4 id="2-1-django端"><a href="#2-1-django端" class="headerlink" title="2.1 django端"></a>2.1 django端</h4><h5 id="2-1-1-middlewares-py"><a href="#2-1-1-middlewares-py" class="headerlink" title="2.1.1 middlewares.py"></a>2.1.1 middlewares.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line">d = redis.Redis(host=<span class="string">&#x27;127.0.0.1&#x27;</span>, port=<span class="number">6379</span>, db=<span class="number">7</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MemberOnlineMiddleWare</span>(<span class="params">MiddlewareMixin</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        path = request.path_info</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">not</span> <span class="keyword">in</span> (<span class="string">&#x27;/user/online/&#x27;</span>):</span><br><span class="line">            ip = request.META[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]</span><br><span class="line">            <span class="keyword">import</span> time</span><br><span class="line">            d.zadd(<span class="string">&#x27;onlines&#x27;</span>, &#123;ip: <span class="built_in">int</span>(time.time())&#125;)</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-1-2-celery-task-celery-lk-py"><a href="#2-1-2-celery-task-celery-lk-py" class="headerlink" title="2.1.2 celery_task/celery_lk.py"></a>2.1.2 celery_task/celery_lk.py</h5><ul>
+<li>值得注意的是，celery版本不能用4xx，要用5.0.0</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">import</span> os,  sys</span><br><span class="line">CELERY_BASE_DIR = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line">print(sys.path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># celery项目中的所有导包地址, 都是以CELERY_BASE_DIR为基准设定.</span></span><br><span class="line"><span class="comment"># 执行celery命令时, 也需要进入CELERY_BASE_DIR目录执行.</span></span><br><span class="line"><span class="keyword">import</span> django</span><br><span class="line">sys.path.insert(<span class="number">0</span>, os.path.join(CELERY_BASE_DIR, <span class="string">&#x27;../gogogo&#x27;</span>))</span><br><span class="line">os.environ.setdefault(<span class="string">&quot;DJANGO_SETTINGS_MODULE&quot;</span>, <span class="string">&quot;gogogo.settings&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义celery实例, 需要的参数, 1, 实例名, 2, 任务发布位置, 3, 结果保存位置</span></span><br><span class="line">app = Celery(<span class="string">&#x27;celery&#x27;</span>,</span><br><span class="line">             broker=<span class="string">&#x27;redis://127.0.0.1:6379/11&#x27;</span>,   <span class="comment"># 任务存放的地方</span></span><br><span class="line">             backend=<span class="string">&#x27;redis://127.0.0.1:6379/12&#x27;</span>,   <span class="comment"># 结果存放的地方</span></span><br><span class="line">             include=[<span class="string">&#x27;celery_task.tasks_beat&#x27;</span>])</span><br><span class="line">            <span class="comment"># 由于上面配置了路径，所以导入时需要注意</span></span><br><span class="line"></span><br><span class="line">app.conf.update(</span><br><span class="line">   result_expires=<span class="number">3600</span>,        <span class="comment">#执行结果放到redis里，一个小时没人取就丢弃</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> celery.schedules <span class="keyword">import</span> crontab</span><br><span class="line"><span class="comment"># 配置定时任务</span></span><br><span class="line">app.conf.beat_schedule = &#123;</span><br><span class="line">    <span class="string">&#x27;add-every-60-seconds&#x27;</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;task&#x27;</span>: <span class="string">&#x27;celery_task.tasks_beat.online_members&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;schedule&#x27;</span>: <span class="number">60.0</span>,</span><br><span class="line">        <span class="comment"># 每60秒发送一次任务</span></span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">app.conf.timezone = <span class="string">&#x27;Asia/Shanghai&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">   app.start()</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-1-3-celery-task-tasks-beat-py"><a href="#2-1-3-celery-task-tasks-beat-py" class="headerlink" title="2.1.3 celery_task/tasks_beat.py"></a>2.1.3 celery_task/tasks_beat.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import, unicode_literals</span><br><span class="line"><span class="comment"># @app.task 指定将这个函数的执行交给celery异步执行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 相当于装饰器，将下面函数打包给app</span></span><br><span class="line"><span class="keyword">from</span> celery_task.celery_lk <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.task(bind=True)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">online_members</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">import</span> redis, time</span><br><span class="line">    d = redis.Redis(host=<span class="string">&#x27;127.0.0.1&#x27;</span>, port=<span class="number">6379</span>, db=<span class="number">7</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line">    after = <span class="built_in">int</span>(time.time()) - <span class="number">60</span></span><br><span class="line">    d.zremrangebyscore(<span class="string">&#x27;onlines&#x27;</span>, <span class="number">0</span>, after)</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-1-4-views-py"><a href="#2-1-4-views-py" class="headerlink" title="2.1.4 views.py"></a>2.1.4 views.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OnlineView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        <span class="keyword">import</span> redis, time</span><br><span class="line">        d = redis.Redis(host=<span class="string">&#x27;127.0.0.1&#x27;</span>, port=<span class="number">6379</span>, db=<span class="number">7</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line">        num = d.zcard(<span class="string">&#x27;onlines&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;访问人数&#x27;</span>, <span class="string">&#x27;num&#x27;</span>:num&#125;)</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-1-5-urls-py"><a href="#2-1-5-urls-py" class="headerlink" title="2.1.5 urls.py"></a>2.1.5 urls.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> userapp <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">&#x27;register/&#x27;</span>, views.RegisterView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;login/&#x27;</span>, views.LoginView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;dingding/&#x27;</span>, views.DingDingView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;test/&#x27;</span>, views.TestAPIView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;online/&#x27;</span>, views.OnlineView.as_view()),</span><br><span class="line"></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-1-6-settings-py"><a href="#2-1-6-settings-py" class="headerlink" title="2.1.6 settings.py"></a>2.1.6 settings.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">&#x27;django.middleware.security.SecurityMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders.middleware.CorsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.common.CommonMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># mysql middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMysqlMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># redis middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoRedisMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># mongo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMongoMiddleWare&#x27;，</span></span><br><span class="line">    <span class="comment"># userinfo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWareB&#x27;,</span></span><br><span class="line">    <span class="comment"># members online</span></span><br><span class="line">    <span class="string">&#x27;userapp.middlewares.MemberOnlineMiddleWare&#x27;</span>,</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Vue端"><a href="#2-2-Vue端" class="headerlink" title="2.2 Vue端"></a>2.2 Vue端</h3><h5 id="2-2-1-headers-vue"><a href="#2-2-1-headers-vue" class="headerlink" title="2.2.1 headers.vue"></a>2.2.1 headers.vue</h5><pre><code class="vue">&lt;template&gt;
+        &lt;div&gt;&lt;a style=&quot;float:right&quot; @click=&quot;outLogin&quot;&gt;注销登录&lt;/a&gt;
+          &lt;h3 style=&quot;margin-top:20px&quot;&gt;           
+          欢迎你
+           &lt;a-icon type=&quot;smile&quot; theme=&quot;outlined&quot; style=&quot;font-size:20px;color:blue&quot;/&gt;&amp;ensp;
+          &#123;&#123;username&#125;&#125;
+            &lt;a-icon type=&quot;fire&quot; style=&quot;font-size:25px;color:blue&quot;/&gt;&amp;ensp;
+            实时人数：&#123;&#123;number&#125;&#125;
+          &lt;/h3&gt;         
+        &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+import &#123; get_members_online &#125; from &#39;@/http/apis&#39;
+export default&#123;
+    data()&#123;
+        return&#123;
+          username:this.$route.query.username,
+          number:&#39;&#39;
+        &#125;
+    &#125;,
+    methods:&#123;
+      outLogin()&#123;
+        localStorage.removeItem(&#39;token&#39;)
+        localStorage.removeItem(&#39;username&#39;)
+        localStorage.removeItem(&#39;uid&#39;)
+        alert(&#39;注销登录成功，稍后为您跳转登录页面&#39;)
+        this.$router.push(&#39;/login&#39;)
+      &#125;,
+      getOnline()&#123;
+        get_members_online().then(res=&gt;&#123;
+          console.log(res)
+          this.number = res.num
+        &#125;)
+      &#125;
+    &#125;,
+    created()&#123;
+      window.setInterval(this.getOnline, 5000)
+    &#125;
+&#125;
+&lt;/script&gt;
+</code></pre>
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

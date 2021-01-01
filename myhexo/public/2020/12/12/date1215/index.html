@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>Docker初识</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="1 安装 Docker1.1 环境搭建1.1.1 环境查看12root@dev:~# uname -r5.4.0-56-generic
+
+1.1.2 系统版本12345678910111213root@dev:etc# cat os-release NAME=&amp;quot;Ubuntu&amp;quot;VE">
+  
+  
+  <meta property="og:title" content="Docker初识"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        Docker初识
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2020-12-12T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-12
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/docker/">docker</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85-Docker"><span class="toc-text">1 安装 Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">1.1 环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-1-1-%E7%8E%AF%E5%A2%83%E6%9F%A5%E7%9C%8B"><span class="toc-text">1.1.1 环境查看</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-1-2-%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC"><span class="toc-text">1.1.2 系统版本</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-1-3-Docker-%E7%89%88%E6%9C%AC"><span class="toc-text">1.1.3 Docker 版本</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-docker-%E2%80%93help"><span class="toc-text">1.2 docker  –help</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-1-%E5%8D%B8%E8%BD%BD%E6%97%A7%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-text">1.2.1 卸载旧的版本</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-2-%E9%9C%80%E8%A6%81%E7%9A%84%E5%AE%89%E8%A3%85%E5%8C%85"><span class="toc-text">1.2.2 需要的安装包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-3-%E8%AE%BE%E7%BD%AE%E9%95%9C%E5%83%8F%E7%9A%84%E4%BB%93%E5%BA%93"><span class="toc-text">1.2.3 设置镜像的仓库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-4-%E5%AE%89%E8%A3%85docker%E7%9B%B8%E5%85%B3%E6%A0%B8%E5%BF%83%EF%BC%8C%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">1.2.4 安装docker相关核心，客户端</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-5-%E5%8F%AF%E4%BB%A5%E5%AE%89%E8%A3%85%E6%8C%87%E5%AE%9A%E7%89%88%E6%9C%AC"><span class="toc-text">1.2.5 可以安装指定版本</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-6-%E5%90%AF%E5%8A%A8docker"><span class="toc-text">1.2.6 启动docker</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-7-docker%E6%B5%8B%E8%AF%95"><span class="toc-text">1.2.7 docker测试</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-8-%E6%9F%A5%E7%9C%8Bdocker%E9%95%9C%E5%83%8F"><span class="toc-text">1.2.8 查看docker镜像</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-9-%E5%8D%B8%E8%BD%BDdocker"><span class="toc-text">1.2.9 卸载docker</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E9%98%BF%E9%87%8C%E4%BA%91%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F"><span class="toc-text">1.3 阿里云镜像加速</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-3-1-ubuntu"><span class="toc-text">1.3.1 ubuntu</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-3-2-centos"><span class="toc-text">1.3.2 centos</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-Docker%E6%AF%94%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%BF%AB%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-text">1.4 Docker比虚拟机快的原因</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-4-1-Docker%E6%9C%89%E6%AF%94%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%9B%B4%E5%B0%91%E7%9A%84%E6%8A%BD%E8%B1%A1%E5%B1%82"><span class="toc-text">1.4.1 Docker有比虚拟机更少的抽象层</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-4-2-Docker%E5%88%A9%E7%94%A8%E7%9A%84%E6%98%AF%E5%AE%BF%E4%B8%BB%E6%9C%BA%E7%9A%84%E5%86%85%E6%A0%B8"><span class="toc-text">1.4.2 Docker利用的是宿主机的内核</span></a></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h3 id="1-安装-Docker"><a href="#1-安装-Docker" class="headerlink" title="1 安装 Docker"></a>1 安装 Docker</h3><h4 id="1-1-环境搭建"><a href="#1-1-环境搭建" class="headerlink" title="1.1 环境搭建"></a>1.1 环境搭建</h4><h5 id="1-1-1-环境查看"><a href="#1-1-1-环境查看" class="headerlink" title="1.1.1 环境查看"></a>1.1.1 环境查看</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@dev:~# uname -r</span><br><span class="line">5.4.0-56-generic</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-1-2-系统版本"><a href="#1-1-2-系统版本" class="headerlink" title="1.1.2 系统版本"></a>1.1.2 系统版本</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@dev:etc# cat os-release </span><br><span class="line">NAME=&quot;Ubuntu&quot;</span><br><span class="line">VERSION=&quot;18.04.5 LTS (Bionic Beaver)&quot;</span><br><span class="line">ID=ubuntu</span><br><span class="line">ID_LIKE=debian</span><br><span class="line">PRETTY_NAME=&quot;Ubuntu 18.04.5 LTS&quot;</span><br><span class="line">VERSION_ID=&quot;18.04&quot;</span><br><span class="line">HOME_URL=&quot;https://www.ubuntu.com/&quot;</span><br><span class="line">SUPPORT_URL=&quot;https://help.ubuntu.com/&quot;</span><br><span class="line">BUG_REPORT_URL=&quot;https://bugs.launchpad.net/ubuntu/&quot;</span><br><span class="line">PRIVACY_POLICY_URL=&quot;https://www.ubuntu.com/legal/terms-and-policies/privacy-policy&quot;</span><br><span class="line">VERSION_CODENAME=bionic</span><br><span class="line">UBUNTU_CODENAME=bionic</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-1-3-Docker-版本"><a href="#1-1-3-Docker-版本" class="headerlink" title="1.1.3 Docker 版本"></a>1.1.3 Docker 版本</h5><ul>
+<li>ce 社区版本</li>
+<li>ee 企业版</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">root@dev:etc<span class="comment"># docker version</span></span><br><span class="line">Client: Docker Engine - Community</span><br><span class="line"> Version:           <span class="number">19.03</span><span class="number">.13</span></span><br><span class="line"> API version:       <span class="number">1.40</span></span><br><span class="line"> Go version:        go1<span class="number">.13</span><span class="number">.15</span></span><br><span class="line"> Git commit:        <span class="number">4484</span>c46d9d</span><br><span class="line"> Built:             Wed Sep <span class="number">16</span> <span class="number">17</span>:<span class="number">02</span>:<span class="number">36</span> <span class="number">2020</span></span><br><span class="line"> OS/Arch:           linux/amd64</span><br><span class="line"> Experimental:      false</span><br><span class="line"></span><br><span class="line">Server: Docker Engine - Community</span><br><span class="line"> Engine:</span><br><span class="line">  Version:          <span class="number">19.03</span><span class="number">.13</span></span><br><span class="line">  API version:      <span class="number">1.40</span> (minimum version <span class="number">1.12</span>)</span><br><span class="line">  Go version:       go1<span class="number">.13</span><span class="number">.15</span></span><br><span class="line">  Git commit:       <span class="number">4484</span>c46d9d</span><br><span class="line">  Built:            Wed Sep <span class="number">16</span> <span class="number">17</span>:<span class="number">01</span>:<span class="number">06</span> <span class="number">2020</span></span><br><span class="line">  OS/Arch:          linux/amd64</span><br><span class="line">  Experimental:     false</span><br><span class="line"> containerd:</span><br><span class="line">  Version:          <span class="number">1.3</span><span class="number">.7</span></span><br><span class="line">  GitCommit:        <span class="number">8</span>fba4e9a7d01810a393d5d25a3621dc101981175</span><br><span class="line"> runc:</span><br><span class="line">  Version:          <span class="number">1.0</span><span class="number">.0</span>-rc10</span><br><span class="line">  GitCommit:        dc9208a3303feef5b3839f4323d9beb36df0a9dd</span><br><span class="line"> docker-init:</span><br><span class="line">  Version:          <span class="number">0.18</span><span class="number">.0</span></span><br><span class="line">  GitCommit:        fec3683</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-docker-–help"><a href="#1-2-docker-–help" class="headerlink" title="1.2 docker  –help"></a>1.2 docker  –help</h4><h5 id="1-2-1-卸载旧的版本"><a href="#1-2-1-卸载旧的版本" class="headerlink" title="1.2.1 卸载旧的版本"></a>1.2.1 卸载旧的版本</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">yum remove docker \</span><br><span class="line">					docker-client \</span><br><span class="line">					docker-client-latest \</span><br><span class="line">					docker-common \</span><br><span class="line">					docker-latest \</span><br><span class="line">					docker-latest-logrotate \</span><br><span class="line">					docker-logrotate \</span><br><span class="line">					docker-engine</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-2-需要的安装包"><a href="#1-2-2-需要的安装包" class="headerlink" title="1.2.2 需要的安装包"></a>1.2.2 需要的安装包</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y yum-utils</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-3-设置镜像的仓库"><a href="#1-2-3-设置镜像的仓库" class="headerlink" title="1.2.3 设置镜像的仓库"></a>1.2.3 设置镜像的仓库</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum-config-manager \</span><br><span class="line">	--add-repo \</span><br><span class="line">	https://mirrors.aliyun.com/docker-ce/linux/ubuntu/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-4-安装docker相关核心，客户端"><a href="#1-2-4-安装docker相关核心，客户端" class="headerlink" title="1.2.4 安装docker相关核心，客户端"></a>1.2.4 安装docker相关核心，客户端</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install docker-ce docker-ce-cli containerd.io</span><br><span class="line"><span class="meta">#</span><span class="bash"> docker-ce 社区版</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> docker-ee 企业版</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-5-可以安装指定版本"><a href="#1-2-5-可以安装指定版本" class="headerlink" title="1.2.5 可以安装指定版本"></a>1.2.5 可以安装指定版本</h5><ul>
+<li>去官方文档即可看到安装方法</li>
+</ul>
+<h5 id="1-2-6-启动docker"><a href="#1-2-6-启动docker" class="headerlink" title="1.2.6 启动docker"></a>1.2.6 启动docker</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl start docker</span><br><span class="line">systemctl status docker  # 查看docker当前状态</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-7-docker测试"><a href="#1-2-7-docker测试" class="headerlink" title="1.2.7 docker测试"></a>1.2.7 docker测试</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-8-查看docker镜像"><a href="#1-2-8-查看docker镜像" class="headerlink" title="1.2.8 查看docker镜像"></a>1.2.8 查看docker镜像</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-9-卸载docker"><a href="#1-2-9-卸载docker" class="headerlink" title="1.2.9 卸载docker"></a>1.2.9 卸载docker</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo yum remove docker-ce docker-ce-cli containerd.io</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载依赖</span></span><br><span class="line">sudo rm -rf /var/lib/docker 		# /var/lib/docker   docker的默认工作路径</span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除资源</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-阿里云镜像加速"><a href="#1-3-阿里云镜像加速" class="headerlink" title="1.3 阿里云镜像加速"></a>1.3 阿里云镜像加速</h4><ul>
+<li>阿里云</li>
+</ul>
+<p><code>https://cr.console.aliyun.com/</code></p>
+<h5 id="1-3-1-ubuntu"><a href="#1-3-1-ubuntu" class="headerlink" title="1.3.1 ubuntu"></a>1.3.1 ubuntu</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/docker</span><br><span class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-&#x27;EOF&#x27;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://nyb1yj4t.mirror.aliyuncs.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-3-2-centos"><a href="#1-3-2-centos" class="headerlink" title="1.3.2 centos"></a>1.3.2 centos</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/docker</span><br><span class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-&#x27;EOF&#x27;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://nyb1yj4t.mirror.aliyuncs.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-Docker比虚拟机快的原因"><a href="#1-4-Docker比虚拟机快的原因" class="headerlink" title="1.4 Docker比虚拟机快的原因"></a>1.4 Docker比虚拟机快的原因</h4><h5 id="1-4-1-Docker有比虚拟机更少的抽象层"><a href="#1-4-1-Docker有比虚拟机更少的抽象层" class="headerlink" title="1.4.1 Docker有比虚拟机更少的抽象层"></a>1.4.1 Docker有比虚拟机更少的抽象层</h5><h5 id="1-4-2-Docker利用的是宿主机的内核"><a href="#1-4-2-Docker利用的是宿主机的内核" class="headerlink" title="1.4.2 Docker利用的是宿主机的内核"></a>1.4.2 Docker利用的是宿主机的内核</h5><p>vm是需要Guest OS，所以说新建一个容器的时候，docker不需要像虚拟机一样重新加载一个操作系统，避免引导，虚拟机是加载Guest OS，分钟级别的，而Docker是利用你宿主机的操作系统，省略了这个复杂的过程，秒级！</p>
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

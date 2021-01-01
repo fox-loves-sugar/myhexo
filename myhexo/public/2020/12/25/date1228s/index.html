@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>优惠券</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="1 优惠券
+充值以及充值成功之间要有优惠券
+
+1.1 生成随机码123456789101112131415161718import randomimport stringcode = string.digits + string.ascii_lettersprint(code)# 生成字符串（4位）">
+  
+  
+  <meta property="og:title" content="优惠券"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        优惠券
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2020-12-25T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-25
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/优惠券/">优惠券</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BC%98%E6%83%A0%E5%88%B8"><span class="toc-text">1 优惠券</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E7%A0%81"><span class="toc-text">1.1 生成随机码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-Django%E7%AB%AF"><span class="toc-text">1.2 Django端</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-1-models-py"><span class="toc-text">1.2.1 models.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-2-views-py"><span class="toc-text">1.2.2 views.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-3-utils-py"><span class="toc-text">1.2.3 utils.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-4-MyAuthorization-py"><span class="toc-text">1.2.4  MyAuthorization.py</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-Vue%E7%AB%AF"><span class="toc-text">1.3 Vue端</span></a></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h3 id="1-优惠券"><a href="#1-优惠券" class="headerlink" title="1 优惠券"></a>1 优惠券</h3><ul>
+<li>充值以及充值成功之间要有优惠券</li>
+</ul>
+<h4 id="1-1-生成随机码"><a href="#1-1-生成随机码" class="headerlink" title="1.1 生成随机码"></a>1.1 生成随机码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"></span><br><span class="line">code = string.digits + string.ascii_letters</span><br><span class="line">print(code)</span><br><span class="line"><span class="comment"># 生成字符串（4位）</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getCode</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(random.sample(code, <span class="number">4</span>))</span><br><span class="line">						   <span class="comment"># 样本</span></span><br><span class="line">print(getCode())</span><br><span class="line"><span class="comment"># 重复率高</span></span><br><span class="line"><span class="comment"># 为了降低重复率</span></span><br><span class="line"><span class="comment"># 可以进行分位</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">key</span>(<span class="params">group</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;-&#x27;</span>.join([getCode() <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(group)])</span><br><span class="line">	<span class="comment"># 列表推导式弊端，可读性降低，左边是逻辑，右边是循环</span></span><br><span class="line">print(key(<span class="number">4</span>))</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-Django端"><a href="#1-2-Django端" class="headerlink" title="1.2 Django端"></a>1.2 Django端</h4><h5 id="1-2-1-models-py"><a href="#1-2-1-models-py" class="headerlink" title="1.2.1 models.py"></a>1.2.1 models.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"><span class="keyword">from</span> userapp.models <span class="keyword">import</span> UserModel</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WalletModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    money = models.DecimalField(max_digits=<span class="number">10</span>, decimal_places=<span class="number">2</span>)</span><br><span class="line">    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;wallet_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CouponModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    coupon_choice = (</span><br><span class="line">        (<span class="string">&#x27;1&#x27;</span>, <span class="string">&#x27;满300减50&#x27;</span>),</span><br><span class="line">        (<span class="string">&#x27;2&#x27;</span>, <span class="string">&#x27;八折优惠&#x27;</span>),</span><br><span class="line">        (<span class="string">&#x27;3&#x27;</span>, <span class="string">&#x27;无门槛10元红包&#x27;</span>)</span><br><span class="line">    )</span><br><span class="line">    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)</span><br><span class="line">    coupon = models.CharField(choices=coupon_choice, max_length=<span class="number">30</span>)</span><br><span class="line">    code = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    create_time = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line">    <span class="comment"># 这里添加创建时间，是为了计算优惠券的有效时间</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;coupon_model&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-2-views-py"><a href="#1-2-2-views-py" class="headerlink" title="1.2.2 views.py"></a>1.2.2 views.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WalletView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        user_info = decodeToken(request)</span><br><span class="line">        user_id = user_info.get(<span class="string">&#x27;user_id&#x27;</span>)</span><br><span class="line">        user = WalletModel.objects.<span class="built_in">filter</span>(user_id=user_id).first()</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            money = <span class="built_in">float</span>(request.data.get(<span class="string">&#x27;money&#x27;</span>))</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值错误&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">400</span>, <span class="string">&#x27;error&#x27;</span>: e&#125;)</span><br><span class="line">        <span class="keyword">if</span> user:</span><br><span class="line">               <span class="keyword">from</span> decimal <span class="keyword">import</span> Decimal</span><br><span class="line">               <span class="comment"># decimal 和 float 不能叠加，要把 float 转换</span></span><br><span class="line">               user.money += Decimal(money)</span><br><span class="line">               user.save()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            WalletModel.objects.create(money=money, user_id=user_id)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> money &lt; <span class="number">100</span>:</span><br><span class="line">            <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            coupon_code = create_code(<span class="number">4</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="number">100</span> &lt;= money &lt; <span class="number">300</span>:</span><br><span class="line">                CouponModel.objects.create(code=coupon_code, coupon=<span class="string">&#x27;3&#x27;</span>, user_id=user_id)</span><br><span class="line">                <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功，同时您获取了10元无门槛红包哦&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br><span class="line">            <span class="keyword">elif</span> <span class="number">300</span> &lt;= money &lt; <span class="number">500</span>:</span><br><span class="line">                CouponModel.objects.create(code=coupon_code, coupon=<span class="string">&#x27;1&#x27;</span>, user_id=user_id)</span><br><span class="line">                <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功，同时您获取了一张满300减50的优惠券&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br><span class="line">            <span class="keyword">elif</span> <span class="number">500</span> &lt;= money &lt; <span class="number">1000</span>:</span><br><span class="line">                CouponModel.objects.create(code=coupon_code, coupon=<span class="string">&#x27;2&#x27;</span>, user_id=user_id)</span><br><span class="line">                <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功，同时您获取了终生八折优惠&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-3-utils-py"><a href="#1-2-3-utils-py" class="headerlink" title="1.2.3 utils.py"></a>1.2.3 utils.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成优惠券随机码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"></span><br><span class="line">code = string.digits + string.ascii_letters</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_code</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(random.sample(code, <span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_code</span>(<span class="params">group</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;-&#x27;</span>.join([get_code() <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(group)])</span><br></pre></td></tr></table></figure>
+
+<h5 id="1-2-4-MyAuthorization-py"><a href="#1-2-4-MyAuthorization-py" class="headerlink" title="1.2.4  MyAuthorization.py"></a>1.2.4  MyAuthorization.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.conf <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse</span><br><span class="line"><span class="keyword">from</span> rest_framework_jwt.utils <span class="keyword">import</span> jwt_decode_handler</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"><span class="keyword">from</span> jwt <span class="keyword">import</span> exceptions</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decodeToken</span>(<span class="params">request</span>):</span></span><br><span class="line">    token = request.META.get(<span class="string">&#x27;HTTP_AUTHORIZATION&#x27;</span>)</span><br><span class="line">    <span class="comment"># print(&#x27;this is token&#x27;, token)</span></span><br><span class="line">    <span class="comment"># user_info = jwt_decode_handler(token[4:])</span></span><br><span class="line">    <span class="comment"># return user_info</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        user_info = jwt.decode(token[<span class="number">4</span>:], settings.SECRET_KEY)</span><br><span class="line">        <span class="comment"># print(&#x27;this is user_info&#x27;, user_info)</span></span><br><span class="line">    <span class="keyword">except</span> exceptions.ExpiredSignatureError:</span><br><span class="line">        <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;token已经失效&#x27;</span>)</span><br><span class="line">    <span class="keyword">except</span> jwt.DecodeError:</span><br><span class="line">        <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;token认证失败&#x27;</span>)</span><br><span class="line">    <span class="keyword">except</span> jwt.InvalidIssuer:</span><br><span class="line">        <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;非法的token&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> user_info</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-Vue端"><a href="#1-3-Vue端" class="headerlink" title="1.3 Vue端"></a>1.3 Vue端</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;钱包充值&lt;&#x2F;h1&gt;</span><br><span class="line">        充值金额：&lt;a-input v-model&#x3D;&quot;costMoney&quot; style&#x3D;&quot;width:200px;&quot;&gt;&lt;&#x2F;a-input&gt;</span><br><span class="line">        &lt;a-button @click&#x3D;&quot;payWallet&quot;&gt;充值&lt;&#x2F;a-button&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import axios from &#39;axios&#39;</span><br><span class="line">import &#123; post_wallet &#125; from &#39;@&#x2F;http&#x2F;apis&#39;</span><br><span class="line">export default &#123;</span><br><span class="line">    data() &#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            costMoney:&#39;&#39;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">        payWallet()&#123;</span><br><span class="line">            let data&#x3D;&#123;</span><br><span class="line">                &#39;money&#39;: this.costMoney</span><br><span class="line">            &#125;</span><br><span class="line">            post_wallet(data).then(res&#x3D;&gt;&#123;</span><br><span class="line">                console.log(res)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

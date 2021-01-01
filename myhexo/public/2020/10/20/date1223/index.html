@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>MongoDB + DWebSocket 实现聊天室</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="1 引入定时器
+celery中也有定时器，但实质上，底层认知如下
+
+1234567891011121314import timeimport requests	    def dojob():    requests.get(&amp;#x27;http://127.0.0.1:1594/sendmsg/?">
+  
+  
+  <meta property="og:title" content="MongoDB + DWebSocket 实现聊天室"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        MongoDB + DWebSocket 实现聊天室
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2020-10-20T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-10-20
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/websocket/">websocket</a>·<a href="/myhexo/tags/mongodb/">mongodb</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BC%95%E5%85%A5%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="toc-text">1 引入定时器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-text">2 表结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E6%B6%88%E6%81%AF%E8%A1%A8"><span class="toc-text">2.1 消息表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E8%81%8A%E5%A4%A9%E8%A1%A8"><span class="toc-text">2.2 聊天表</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Django%E7%AB%AF"><span class="toc-text">3 Django端</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-utils-py"><span class="toc-text">3.1 utils.py</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-urls-py"><span class="toc-text">3.2 urls.py</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-Questions"><span class="toc-text">3.3 Questions</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Vue%E7%AB%AF"><span class="toc-text">4 Vue端</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-UserOnline-vue"><span class="toc-text">4.1 UserOnline.vue</span></a></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h3 id="1-引入定时器"><a href="#1-引入定时器" class="headerlink" title="1 引入定时器"></a>1 引入定时器</h3><ul>
+<li>celery中也有定时器，但实质上，底层认知如下</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> requests	</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dojob</span>():</span></span><br><span class="line">    requests.get(<span class="string">&#x27;http://127.0.0.1:1594/sendmsg/?msg=&quot;xxx&quot;&#x27;</span>)</span><br><span class="line">    print(<span class="string">&#x27;运行任务了&#x27;</span>)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loopfunc</span>():</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">    dojob()</span></span><br><span class="line"><span class="string">    time.sleep(60)</span></span><br><span class="line"><span class="string">    # 定时器</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">loopfunc()</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-表结构"><a href="#2-表结构" class="headerlink" title="2 表结构"></a>2 表结构</h3><h4 id="2-1-消息表"><a href="#2-1-消息表" class="headerlink" title="2.1 消息表"></a>2.1 消息表</h4><ul>
+<li>设置三个字段，分别是 id，message，chat_id</li>
+<li>集合名称是聊天表的uuid</li>
+</ul>
+<h4 id="2-2-聊天表"><a href="#2-2-聊天表" class="headerlink" title="2.2 聊天表"></a>2.2 聊天表</h4><ul>
+<li>设置三个字段，分别为id，user_a，user_b， uuid</li>
+<li>因为mongodb存储的方式为集合，所以 _id 是唯一的，所以存储的chat_id我设定为uuid字符串，并且为对应消息表的集合名称！</li>
+</ul>
+<h3 id="3-Django端"><a href="#3-Django端" class="headerlink" title="3 Django端"></a>3 Django端</h3><h4 id="3-1-utils-py"><a href="#3-1-utils-py" class="headerlink" title="3.1 utils.py"></a>3.1 utils.py</h4><ul>
+<li>开发存在一定问题，后续排查bug</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 聊天室</span></span><br><span class="line"></span><br><span class="line">text_list = []</span><br><span class="line">tmp = []</span><br><span class="line">user_a = <span class="string">&#x27;&#x27;</span></span><br><span class="line">user_b = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">import</span> uuid</span><br><span class="line">message_id = <span class="built_in">str</span>(uuid.uuid4())</span><br><span class="line"><span class="comment"># 最关键的id，foreign集合中它的值是所对应聊天记录的集合名！！！！</span></span><br><span class="line"><span class="meta">@accept_websocket</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">admin_send_message</span>(<span class="params">request</span>):</span></span><br><span class="line">    <span class="comment"># 修改全局变量</span></span><br><span class="line">    <span class="keyword">global</span> user_a</span><br><span class="line">    <span class="keyword">global</span> user_b</span><br><span class="line">    <span class="keyword">global</span> message_id</span><br><span class="line">    <span class="keyword">import</span> pymongo</span><br><span class="line">    client = pymongo.MongoClient(host=<span class="string">&#x27;localhost&#x27;</span>, port=<span class="number">27017</span>)</span><br><span class="line">    db = client[<span class="string">&#x27;gogogo_db&#x27;</span>]</span><br><span class="line">    <span class="built_in">set</span> = db[<span class="string">&#x27;foreign&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> request.is_websocket():</span><br><span class="line">        <span class="comment"># 解密，为了存储聊天信息</span></span><br><span class="line">        user_info = jwt.decode(request.GET.get(<span class="string">&#x27;token&#x27;</span>), settings.SECRET_KEY)</span><br><span class="line">        user_id = user_info.get(<span class="string">&#x27;user_id&#x27;</span>)</span><br><span class="line">        <span class="comment"># 匹配用户，两个用户才建立聊天表（储存用户id）</span></span><br><span class="line">        <span class="keyword">if</span> user_a == <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">            user_a = user_id</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> user_a != user_id <span class="keyword">and</span> user_b == <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">                user_b = user_id</span><br><span class="line">                <span class="keyword">if</span> user_a &gt; user_b:</span><br><span class="line">                    <span class="comment"># 小的在前，大的在后</span></span><br><span class="line">                    user_a, user_b = user_b, user_a</span><br><span class="line">                    print(user_a, user_b, <span class="string">&#x27;匹配成功&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> user_a != <span class="string">&#x27;&#x27;</span> <span class="keyword">and</span> user_b != <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">            obj = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">set</span>.find(&#123;<span class="string">&quot;user_id_a&quot;</span>: user_a, <span class="string">&quot;user_id_b&quot;</span>: user_b&#125;)]</span><br><span class="line">            <span class="keyword">if</span> obj:</span><br><span class="line">                message_id = obj[<span class="number">0</span>].get(<span class="string">&#x27;message_id&#x27;</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">set</span>.insert(</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="string">&#x27;user_id_a&#x27;</span>: user_a,</span><br><span class="line">                        <span class="string">&#x27;user_id_b&#x27;</span>: user_b,</span><br><span class="line">                        <span class="string">&#x27;message_id&#x27;</span>: message_id</span><br><span class="line">                    &#125;</span><br><span class="line">                )</span><br><span class="line">            tmp.append(request.websocket)</span><br><span class="line">            <span class="comment"># 把所有连接的 websocket 都加入 tmp 列表中</span></span><br><span class="line">            <span class="keyword">for</span> message <span class="keyword">in</span> request.websocket:</span><br><span class="line">                <span class="keyword">if</span> message <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                    message = message.decode()</span><br><span class="line">                    <span class="comment"># message.decode() 是前端发送来的消息</span></span><br><span class="line">                    <span class="comment"># print(time.time(), message.decode())</span></span><br><span class="line">                    sat = db[message_id]</span><br><span class="line">                    <span class="comment"># 存入数据，根据聊天表的 message_id 做表名</span></span><br><span class="line">                    sat.insert(</span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="string">&#x27;user_id&#x27;</span>: user_id,</span><br><span class="line">                            <span class="string">&#x27;message&#x27;</span>: message</span><br><span class="line">                        &#125;</span><br><span class="line">                    )</span><br><span class="line">                    <span class="keyword">for</span> ws <span class="keyword">in</span> tmp:</span><br><span class="line">                        text = db[message_id].find()</span><br><span class="line">                        <span class="keyword">for</span> i <span class="keyword">in</span> text:</span><br><span class="line">                            dic = &#123;&#125;</span><br><span class="line">                            dic[<span class="string">&#x27;user_id&#x27;</span>] = i[<span class="string">&#x27;user_id&#x27;</span>]</span><br><span class="line">                            dic[<span class="string">&#x27;username&#x27;</span>] = UserModel.objects.get(pk=<span class="built_in">int</span>(i[<span class="string">&#x27;user_id&#x27;</span>])).username</span><br><span class="line">                            dic[<span class="string">&#x27;message&#x27;</span>] = i[<span class="string">&#x27;message&#x27;</span>]</span><br><span class="line">                            text_list.append(dic)</span><br><span class="line">                    <span class="keyword">import</span> json</span><br><span class="line">                    request.websocket.send(json.dumps(text_list))</span><br><span class="line">                        <span class="comment"># json.dumps(text_list, ensure_ascii=False)</span></span><br><span class="line">                        <span class="comment"># 不加 ensure_ascii = False 会乱码，加了无法传递，会断开连接，前端想办法吧</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-urls-py"><a href="#3-2-urls-py" class="headerlink" title="3.2 urls.py"></a>3.2 urls.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sharesapp <span class="keyword">import</span> views</span><br><span class="line"><span class="keyword">from</span> sharesapp.utils <span class="keyword">import</span> websocketlink, admin_send_message</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">&#x27;shares_add/&#x27;</span>, views.SharesWeekKView.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;websocketlink/&#x27;</span>, websocketlink),</span><br><span class="line">    path(<span class="string">&#x27;send_message_admin/&#x27;</span>, admin_send_message)</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-Questions"><a href="#3-3-Questions" class="headerlink" title="3.3 Questions"></a>3.3 Questions</h4><p>存在问题，request.websocket.send()传递的是unicode编码的字符，需要注意！</p>
+<p>websocket总是异常启动失败，后续等待排查</p>
+<h3 id="4-Vue端"><a href="#4-Vue端" class="headerlink" title="4 Vue端"></a>4 Vue端</h3><h4 id="4-1-UserOnline-vue"><a href="#4-1-UserOnline-vue" class="headerlink" title="4.1 UserOnline.vue"></a>4.1 UserOnline.vue</h4><pre><code class="vue">&lt;template&gt;
+    
+  &lt;div&gt;
+        &lt;a-button type=&quot;primary&quot; @click=&quot;showModal&quot;&gt;
+            实时聊天     
+        &lt;/a-button&gt;
+        &lt;a-modal v-model=&quot;visible&quot; title=&quot;聊天框&quot; @ok=&quot;handleOk&quot;&gt;                
+          &lt;div style=&quot;height: 100px&quot;&gt;
+            &lt;p&gt;历史记录：&lt;/p&gt;
+            &lt;table&gt;
+              &lt;tr v-for=&quot;(h, item) in history&quot; :key=&quot;item&quot;&gt;
+                &lt;td&gt;&#123;&#123;h.username&#125;&#125;:&lt;/td&gt;
+                &lt;td&gt;&#123;&#123;h.message&#125;&#125;&lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/table&gt;
+          &lt;/div&gt;           
+          &lt;p&gt;&lt;a-textarea style=&quot;height: 100px&quot; v-model=&quot;message&quot;&gt;&lt;/a-textarea&gt;&lt;/p&gt;           
+          &lt;p&gt;&lt;a-button style=&quot;float: right&quot; @click=&quot;sendMessage&quot;&gt;发送消息&lt;/a-button&gt;&lt;/p&gt;
+          &lt;br /&gt;
+        &lt;/a-modal&gt;     
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+export default &#123;
+  data() &#123;
+    return &#123;
+      visible: false,
+      message: &quot;&quot;,
+      path: &quot;ws://127.0.0.1:1594/shares/send_message_admin/&quot;,
+      socket: &quot;&quot;,
+      token: localStorage.getItem(&#39;token&#39;),
+      history:[]
+    &#125;;
+  &#125;,
+  methods: &#123;
+    showModal() &#123;
+      this.visible = true;
+      this.init();
+    &#125;,
+    handleOk(e) &#123;
+      console.log(this.value);
+      console.log(e);
+      this.visible = false;
+    &#125;,
+    init: function () &#123;
+      if (typeof WebSocket === &quot;undefined&quot;) &#123;
+        alert(&quot;您的浏览器不支持socket&quot;);
+      &#125; else &#123;
+        // 实例化socket
+        this.socket = new WebSocket(this.path + &#39;?token=&#39; + this.token);
+        // 监听socket连接
+        this.socket.onopen = this.open;
+        // 监听socket错误信息
+        this.socket.onerror = this.error;
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage;
+      &#125;
+    &#125;,
+    open: function (msg) &#123;
+      console.log(&quot;socket连接成功&quot;);
+    &#125;,
+    error: function () &#123;
+      console.log(&quot;连接错误&quot;);
+    &#125;,
+    getMessage: function (msg) &#123;
+      this.history = JSON.parse(msg.data)
+      console.log(&quot;后端传来的数据&quot;, msg.data); // 打印后台返回的数据
+    &#125;,
+    sendMessage: function () &#123;
+      this.socket.send(this.message); // 发送给后台的数据
+    &#125;,
+    close: function () &#123;
+      console.log(&quot;socket已经关闭&quot;);
+    &#125;,
+  &#125;,
+  destroyed() &#123;
+    // 销毁监听
+    this.socket.onclose = this.close;
+  &#125;,
+  mounted() &#123;&#125;,
+&#125;;
+&lt;/script&gt;
+</code></pre>
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

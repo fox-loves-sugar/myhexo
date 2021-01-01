@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>分布式锁</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="1 引言
+思考：高并发情况，会不会出现问题？
+
+1234567891011121314from django.db import connection# 锁的使用def testlock(request):    res = User.objects.get(pk=1)    # 查不到会报错   ">
+  
+  
+  <meta property="og:title" content="分布式锁"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        分布式锁
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2020-12-26T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-26
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/优惠分布式锁，redis/">优惠分布式锁，redis</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BC%95%E8%A8%80"><span class="toc-text">1 引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%94%81%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-text">2 锁的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E6%9C%AC%E5%9C%B0%E9%94%81"><span class="toc-text">2.1 本地锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-text">2.2 分布式锁</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-mysql-django-%E5%AE%9E%E7%8E%B0%E9%94%81%E6%9C%BA%E5%88%B6"><span class="toc-text">3 mysql + django 实现锁机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-mysql%E4%B8%AD%E5%B8%B8%E8%A7%81%E7%9A%84%E9%94%81"><span class="toc-text">3.1 mysql中常见的锁</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1-%E4%B9%90%E8%A7%82%E9%94%81"><span class="toc-text">3.1.1 乐观锁</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2-%E6%82%B2%E8%A7%82%E9%94%81"><span class="toc-text">3.1.2 悲观锁</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E5%90%AF%E5%8F%91%E6%96%87%E4%BB%B6"><span class="toc-text">3.2 启发文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E5%85%B7%E4%BD%93%E4%BB%A3%E7%A0%81"><span class="toc-text">3.3 具体代码</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-1-models-py"><span class="toc-text">3.3.1 models.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-2-views-py"><span class="toc-text">3.3.2 views.py</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-redis-django-%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-text">4 redis + django 实现分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-text">4.1 分布式锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E5%85%B7%E4%BD%93%E4%BB%A3%E7%A0%81"><span class="toc-text">4.2 具体代码</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#4-2-1-views-py"><span class="toc-text">4.2.1 views.py</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%B0%8F%E7%BB%93"><span class="toc-text">5 小结</span></a></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h3 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h3><ul>
+<li>思考：高并发情况，会不会出现问题？</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> connection</span><br><span class="line"></span><br><span class="line"><span class="comment"># 锁的使用</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">testlock</span>(<span class="params">request</span>):</span></span><br><span class="line">    res = User.objects.get(pk=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 查不到会报错</span></span><br><span class="line">    <span class="keyword">if</span> res.num &gt; <span class="number">0</span>:</span><br><span class="line">        time.sleep(<span class="number">5</span>)</span><br><span class="line">        <span class="comment"># 人为延缓流程</span></span><br><span class="line">        <span class="keyword">with</span> connection.cursor() <span class="keyword">as</span> c:</span><br><span class="line">            c.execute(<span class="string">&#x27;update user set num = num - 1 where id = 1&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;ok&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;钱包为空&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>什么是qbs</li>
+</ul>
+<p>引入xampp（Apache+MySQL+PHP+PERL），是一种很好的压测工具，不用认为压测，其中有一个指令对qbs的解释很好</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ab -c100 -n500</span><br><span class="line"><span class="meta">#</span><span class="bash"> -c：并发   -n：500人</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 500/100 5s完成请求（通常是1:4 1:5）</span></span><br></pre></td></tr></table></figure>
+
+<p>这就说明了，高并发情况下，逻辑是对的，但是代码会出现问题</p>
+<h3 id="2-锁的概念"><a href="#2-锁的概念" class="headerlink" title="2 锁的概念"></a>2 锁的概念</h3><h4 id="2-1-本地锁"><a href="#2-1-本地锁" class="headerlink" title="2.1 本地锁"></a>2.1 本地锁</h4><ul>
+<li>线程是不需要加锁的，因为在Cpython中存在GIL全局解释器锁</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本地锁</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_it</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="keyword">global</span> num</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> lock.acquire():    </span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000000</span>):</span><br><span class="line">                num = num + n</span><br><span class="line">                num = num - n</span><br><span class="line">        <span class="keyword">finally</span>:</span><br><span class="line">            lock.release()</span><br><span class="line">    print(num)</span><br><span class="line">threads - [</span><br><span class="line">    threading.Thread(target=change_it, args=(<span class="number">8</span>,)),</span><br><span class="line">    threading.Thread(target=change_it, args=(<span class="number">10</span>,))</span><br><span class="line">]</span><br><span class="line">lock = threading.Lock()</span><br><span class="line">[t.start() <span class="keyword">for</span> t <span class="keyword">in</span> threads]</span><br><span class="line">[t.join() <span class="keyword">for</span> t <span class="keyword">in</span> threads]</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-分布式锁"><a href="#2-2-分布式锁" class="headerlink" title="2.2 分布式锁"></a>2.2 分布式锁</h4><ul>
+<li>共用一把锁（全局锁，基于redis）</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">setnx locknx test</span><br><span class="line"><span class="comment"># key locknx value test</span></span><br><span class="line">setnx locknx task</span><br><span class="line"><span class="comment"># 发现无法更改</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="comment"># 证明：获取</span></span><br><span class="line">get locknx</span><br><span class="line"><span class="string">&#x27;test&#x27;</span></span><br><span class="line"><span class="comment"># 释放锁</span></span><br><span class="line"><span class="keyword">del</span> locknx</span><br><span class="line"><span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 56行bind 127.0.0.1 注释掉，允许别人访问自己的redis</span></span><br><span class="line"><span class="comment"># 不会引发资源冲突</span></span><br><span class="line"><span class="comment"># 隐患：如果正在访问的时候宕机，永久锁入</span></span><br><span class="line"><span class="comment"># 加一个延时锁</span></span><br><span class="line">expire locknx <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-mysql-django-实现锁机制"><a href="#3-mysql-django-实现锁机制" class="headerlink" title="3 mysql + django 实现锁机制"></a>3 mysql + django 实现锁机制</h3><h4 id="3-1-mysql中常见的锁"><a href="#3-1-mysql中常见的锁" class="headerlink" title="3.1 mysql中常见的锁"></a>3.1 mysql中常见的锁</h4><h5 id="3-1-1-乐观锁"><a href="#3-1-1-乐观锁" class="headerlink" title="3.1.1 乐观锁"></a>3.1.1 乐观锁</h5><p>不操作不加锁，读取不加</p>
+<h5 id="3-1-2-悲观锁"><a href="#3-1-2-悲观锁" class="headerlink" title="3.1.2 悲观锁"></a>3.1.2 悲观锁</h5><p>读取就加锁，持悲观态度</p>
+<h4 id="3-2-启发文件"><a href="#3-2-启发文件" class="headerlink" title="3.2 启发文件"></a>3.2 启发文件</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@contextmanager</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_lock</span>(<span class="params">lock_id, expire_second, **kwargs</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    :param lock_id: 锁id</span></span><br><span class="line"><span class="string">    :param expire_second: 过期时间</span></span><br><span class="line"><span class="string">    :param kwargs: 用于以后自定义传入参数</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    dead_lock = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 加锁</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            MyLock.objects.create(<span class="built_in">id</span>=lock_id)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">except</span> django.db.utils.IntegrityError:</span><br><span class="line">            <span class="comment"># 出错看是在运行中还是死锁</span></span><br><span class="line">            ctime = datetime.datetime.now() - datetime.timedelta(seconds=expire_second)</span><br><span class="line">            <span class="keyword">if</span> MyLock.objects.<span class="built_in">filter</span>(Q(<span class="built_in">id</span>=lock_id) &amp; Q(create_time__gt=ctime)).exists():</span><br><span class="line">                print(<span class="string">&#x27;当前任务执行中&#x27;</span>)</span><br><span class="line">                <span class="comment"># time.sleep(5)</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 排除刚好任务执行完的那一刻，还未释放锁就加锁的情况</span></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> dead_lock:</span><br><span class="line">                    dead_lock = <span class="literal">True</span></span><br><span class="line">                    time.sleep(<span class="number">5</span>)</span><br><span class="line">                <span class="comment"># 删除死锁</span></span><br><span class="line">                MyLock.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=lock_id).delete()</span><br><span class="line">                print(<span class="string">&#x27;死锁&#x27;</span>)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">    <span class="comment"># 执行任务</span></span><br><span class="line">    <span class="keyword">yield</span> kwargs</span><br><span class="line">    <span class="comment"># 去锁</span></span><br><span class="line">    MyLock.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=lock_id).delete()</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-具体代码"><a href="#3-3-具体代码" class="headerlink" title="3.3 具体代码"></a>3.3 具体代码</h4><h5 id="3-3-1-models-py"><a href="#3-3-1-models-py" class="headerlink" title="3.3.1 models.py"></a>3.3.1 models.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyLock</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    <span class="built_in">id</span> = models.AutoField(auto_created=<span class="literal">True</span>, primary_key=<span class="literal">True</span>, serialize=<span class="literal">False</span>,verbose_name=<span class="string">&#x27;ID&#x27;</span>)</span><br><span class="line">    create_time = models.DateTimeField(auto_now=<span class="literal">True</span>, verbose_name=<span class="string">&#x27;创建锁时间&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;my_lock_model&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-3-2-views-py"><a href="#3-3-2-views-py" class="headerlink" title="3.3.2 views.py"></a>3.3.2 views.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WalletView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request</span>):</span></span><br><span class="line">            dead_lock = <span class="literal">False</span></span><br><span class="line">            <span class="comment"># 加锁</span></span><br><span class="line">            <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    lock = MyLock.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=<span class="number">1</span>)</span><br><span class="line">                    <span class="keyword">if</span> lock:</span><br><span class="line">                        print(<span class="string">&#x27;程序运行中，请等待&#x27;</span>)</span><br><span class="line">                        time.sleep(<span class="number">5</span>)</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        MyLock.objects.create(<span class="built_in">id</span>=<span class="number">1</span>)</span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line">                <span class="keyword">except</span> django.db.utils.IntegrityError:</span><br><span class="line">                    <span class="comment"># 出错看是在运行中还是死锁</span></span><br><span class="line">                    ctime = datetime.datetime.now() - datetime.timedelta(seconds=<span class="number">60</span>)</span><br><span class="line">                    <span class="keyword">if</span> MyLock.objects.<span class="built_in">filter</span>(Q(<span class="built_in">id</span>=<span class="number">1</span>) &amp; Q(create_time__gt=ctime)).exists():</span><br><span class="line">                        print(<span class="string">&#x27;当前任务执行中&#x27;</span>)</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        <span class="comment"># 排除刚好任务执行完的那一刻，还未释放锁就加锁的情况</span></span><br><span class="line">                        <span class="keyword">if</span> <span class="keyword">not</span> dead_lock:</span><br><span class="line">                            dead_lock = <span class="literal">True</span></span><br><span class="line">                            time.sleep(<span class="number">5</span>)</span><br><span class="line">                        <span class="comment"># 删除死锁</span></span><br><span class="line">                        MyLock.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=<span class="number">1</span>).delete()</span><br><span class="line">                        print(<span class="string">&#x27;死锁&#x27;</span>)</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">            user_id = <span class="number">3</span></span><br><span class="line">            give_money = <span class="number">1</span></span><br><span class="line">            wallet = WalletModel.objects.get(user_id=user_id)</span><br><span class="line">            <span class="keyword">if</span> give_money &lt;= wallet.money:</span><br><span class="line">                WalletModel.objects.<span class="built_in">filter</span>(user_id=user_id).update(money=F(<span class="string">&#x27;money&#x27;</span>) - give_money)</span><br><span class="line">            print(<span class="string">&#x27;释放锁&#x27;</span>)</span><br><span class="line">            MyLock.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=<span class="number">1</span>).delete()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;提现成功&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="4-redis-django-实现分布式锁"><a href="#4-redis-django-实现分布式锁" class="headerlink" title="4 redis + django 实现分布式锁"></a>4 redis + django 实现分布式锁</h3><h4 id="4-1-分布式锁"><a href="#4-1-分布式锁" class="headerlink" title="4.1 分布式锁"></a>4.1 分布式锁</h4><p>分布式锁的本质是占一个坑，当别的进程也要来占坑时发现已经被占，就会放弃或者稍后重试。占坑一般使用setnx指令，只允许一个客户端占坑。先来先占，用完了再调用del指令释放坑。先来先占，用完了再调用del指令释放坑。为了解决死锁，引入expire过期时间。（这种竞争解决方案还可以考虑消息队列）</p>
+<h4 id="4-2-具体代码"><a href="#4-2-具体代码" class="headerlink" title="4.2 具体代码"></a>4.2 具体代码</h4><h5 id="4-2-1-views-py"><a href="#4-2-1-views-py" class="headerlink" title="4.2.1 views.py"></a>4.2.1 views.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WalletView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        user_info = decodeToken(request)</span><br><span class="line">        user_id = user_info.get(<span class="string">&#x27;user_id&#x27;</span>)</span><br><span class="line">        user = WalletModel.objects.<span class="built_in">filter</span>(user_id=user_id).first()</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            money = <span class="built_in">float</span>(request.data.get(<span class="string">&#x27;money&#x27;</span>))</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值错误&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">400</span>, <span class="string">&#x27;error&#x27;</span>: e&#125;)</span><br><span class="line">        <span class="keyword">if</span> user:</span><br><span class="line">               <span class="keyword">from</span> decimal <span class="keyword">import</span> Decimal</span><br><span class="line">               <span class="comment"># decimal 和 float 不能叠加，要把 float 转换</span></span><br><span class="line">               user.money += Decimal(money)</span><br><span class="line">               user.save()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            WalletModel.objects.create(money=money, user_id=user_id)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> money &lt; <span class="number">100</span>:</span><br><span class="line">            <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            coupon_code = create_code(<span class="number">4</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="number">100</span> &lt;= money &lt; <span class="number">300</span>:</span><br><span class="line">                CouponModel.objects.create(code=coupon_code, coupon=<span class="string">&#x27;3&#x27;</span>, user_id=user_id)</span><br><span class="line">                <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功，同时您获取了10元无门槛红包哦&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br><span class="line">            <span class="keyword">elif</span> <span class="number">300</span> &lt;= money &lt; <span class="number">500</span>:</span><br><span class="line">                CouponModel.objects.create(code=coupon_code, coupon=<span class="string">&#x27;1&#x27;</span>, user_id=user_id)</span><br><span class="line">                <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功，同时您获取了一张满300减50的优惠券&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br><span class="line">            <span class="keyword">elif</span> <span class="number">500</span> &lt;= money &lt; <span class="number">1000</span>:</span><br><span class="line">                CouponModel.objects.create(code=coupon_code, coupon=<span class="string">&#x27;2&#x27;</span>, user_id=user_id)</span><br><span class="line">                <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;充值成功，同时您获取了终生八折优惠&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">put</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        <span class="keyword">import</span> redis</span><br><span class="line">        r = redis.Redis(db=<span class="number">15</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line">        dead_lock = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                r.setnx(<span class="string">&#x27;locknx&#x27;</span>, <span class="string">&#x27;lock&#x27;</span>)</span><br><span class="line">                r.expire(<span class="string">&#x27;locknx&#x27;</span>, <span class="number">20</span>)</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">except</span> django.db.utils.IntegrityError:</span><br><span class="line">                <span class="comment"># 出错看是在运行中还是死锁</span></span><br><span class="line">                <span class="keyword">if</span> r.get(<span class="string">&#x27;locknx&#x27;</span>):</span><br><span class="line">                    print(<span class="string">&#x27;当前任务执行中&#x27;</span>)</span><br><span class="line">                    time.sleep(<span class="number">5</span>)</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="comment"># 排除刚好任务执行完的那一刻，还未释放锁就加锁的情况</span></span><br><span class="line">                    <span class="keyword">if</span> <span class="keyword">not</span> dead_lock:</span><br><span class="line">                        dead_lock = <span class="literal">True</span></span><br><span class="line">                        time.sleep(<span class="number">5</span>)</span><br><span class="line">                    <span class="comment"># 删除死锁</span></span><br><span class="line">                    r.delete(<span class="string">&#x27;locknx&#x27;</span>)</span><br><span class="line">                    print(<span class="string">&#x27;死锁&#x27;</span>)</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">        user_info = decodeToken(request)</span><br><span class="line">        user_id = user_info.get(<span class="string">&#x27;user_id&#x27;</span>)</span><br><span class="line">        give_money = <span class="built_in">float</span>(request.data.get(<span class="string">&#x27;money&#x27;</span>))</span><br><span class="line">        wallet = WalletModel.objects.get(user_id=user_id)</span><br><span class="line">        <span class="keyword">if</span> give_money &lt;= wallet.money:</span><br><span class="line">            WalletModel.objects.<span class="built_in">filter</span>(user_id=user_id).update(money=F(<span class="string">&#x27;money&#x27;</span>)-give_money)</span><br><span class="line">        r.delete(<span class="string">&#x27;locknx&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;提现成功&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="5-小结"><a href="#5-小结" class="headerlink" title="5 小结"></a>5 小结</h3><ul>
+<li>相比之下</li>
+</ul>
+<p>redis性能好，测试mysql有的时候会失败，而且跑完100并发需要86秒，但是redis只需要9秒，不同锁有不同的应用场景，这才是重中之中</p>
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

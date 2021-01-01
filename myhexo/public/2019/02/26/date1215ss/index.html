@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>python垃圾回收机制</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="本文根据内存管理机制，采用实例来验证内存管理机制，并提出了自己对于python内存管理机制的一些见解。
+
+1 By code1.1 引用计数+垃圾回收机制1234567891011121314151617import sysclass Person:    passp1 = Person()p2 =">
+  
+  
+  <meta property="og:title" content="python垃圾回收机制"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        python垃圾回收机制
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2019-02-26T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2019-02-26
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/python/">python</a>·<a href="/myhexo/tags/垃圾回收机制/">垃圾回收机制</a>·<a href="/myhexo/tags/引用计数/">引用计数</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-By-code"><span class="toc-text">1 By code</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="toc-text">1.1 引用计数+垃圾回收机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E5%88%86%E4%BB%A3%E5%9B%9E%E6%94%B6"><span class="toc-text">1.2 分代回收</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Notice"><span class="toc-text">2 Notice</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0"><span class="toc-text">2.1 引用计数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4"><span class="toc-text">2.2 标记-清除</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-1-%E6%A0%87%E8%AE%B0"><span class="toc-text">2.2.1 标记</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-%E6%B8%85%E9%99%A4"><span class="toc-text">2.2.2 清除</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-3-%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">2.2.3 标记清除存在的问题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-4-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">2.2.4 注意事项</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E5%88%86%E4%BB%A3%E5%9B%9E%E6%94%B6"><span class="toc-text">2.3 分代回收</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-1-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-text">2.3.1 核心思想</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-2-%E5%88%86%E4%BB%A3%E5%9B%9E%E6%94%B6%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-text">2.3.2 分代回收的好处</span></a></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <ul>
+<li>本文根据内存管理机制，采用实例来验证内存管理机制，并提出了自己对于python内存管理机制的一些见解。</li>
+</ul>
+<h3 id="1-By-code"><a href="#1-By-code" class="headerlink" title="1 By code"></a>1 By code</h3><h4 id="1-1-引用计数-垃圾回收机制"><a href="#1-1-引用计数-垃圾回收机制" class="headerlink" title="1.1 引用计数+垃圾回收机制"></a>1.1 引用计数+垃圾回收机制</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">p1 = Person()</span><br><span class="line">p2 = p1</span><br><span class="line">print(<span class="string">&#x27;p1引用计数：&#x27;</span>, sys.getrefcount(p1))           <span class="comment"># p1引用计数： 3</span></span><br><span class="line"><span class="comment"># del p2</span></span><br><span class="line"><span class="comment"># print(&#x27;p1引用计数：&#x27;, sys.getrefcount(p1))         # p2引用计数： 2</span></span><br><span class="line"></span><br><span class="line">print(<span class="built_in">id</span>(p1))                                       <span class="comment"># 1901831032904</span></span><br><span class="line">print(<span class="built_in">id</span>(p2))                                       <span class="comment"># 1901831032904</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> p1 <span class="keyword">is</span> p2:</span><br><span class="line">    print(<span class="string">&#x27;yes&#x27;</span>)                                    <span class="comment"># yes</span></span><br><span class="line"></span><br><span class="line">print(sys.getsizeof(p1))                            <span class="comment"># 56 bites</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-分代回收"><a href="#1-2-分代回收" class="headerlink" title="1.2 分代回收"></a>1.2 分代回收</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">p = Person()</span><br><span class="line">d = Dog()</span><br><span class="line">p.pet = d</span><br><span class="line">d.master = p</span><br><span class="line"></span><br><span class="line">print(<span class="string">&#x27;p引用计数：&#x27;</span>, sys.getrefcount(p))           <span class="comment"># p引用计数： 3</span></span><br><span class="line">print(<span class="string">&#x27;d引用计数：&#x27;</span>, sys.getrefcount(d))           <span class="comment"># d引用计数： 3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">del</span> p</span><br><span class="line">print(<span class="string">&#x27;d引用计数：&#x27;</span>, sys.getrefcount(d))           <span class="comment"># d引用计数： 3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-Notice"><a href="#2-Notice" class="headerlink" title="2 Notice"></a>2 Notice</h3><h4 id="2-1-引用计数"><a href="#2-1-引用计数" class="headerlink" title="2.1 引用计数"></a>2.1 引用计数</h4><p>引用计数是编程语言总的一种内存管理技术，将资源的被引用次数保存起来。</p>
+<ul>
+<li>资源：可以是对象，内存或磁盘空间等</li>
+<li>def语句会删除对象的一个引用，这将导致该引用指向的对象的引用计数减1</li>
+<li>任何追踪或调试程序会给对象增加一个额外引用，这会推迟该对象被回收的时间</li>
+<li>由于两个或以上对象互相引用时，彼此引用计数不为0，造成循环应用而无法回收</li>
+</ul>
+<h4 id="2-2-标记-清除"><a href="#2-2-标记-清除" class="headerlink" title="2.2 标记-清除"></a>2.2 标记-清除</h4><ul>
+<li>标记清除分为两个阶段，首先标记对象（垃圾检测），然后清除垃圾（垃圾回收）</li>
+</ul>
+<h5 id="2-2-1-标记"><a href="#2-2-1-标记" class="headerlink" title="2.2.1 标记"></a>2.2.1 标记</h5><p>在此阶段，垃圾回收器会从跟对象开始遍历。</p>
+<p>每个可以从根对象访问到的对象都会被添加标识，这个对象被标识为可到达对象，可到达对象不会被清除。</p>
+<h5 id="2-2-2-清除"><a href="#2-2-2-清除" class="headerlink" title="2.2.2 清除"></a>2.2.2 清除</h5><p>在此阶段，垃圾回收器会对堆内存从头到尾进行线性遍历</p>
+<p>如果发现有对象没有被标识为可到达对象，那么就此对象内存回收</p>
+<p>之后将原来标记为可到达对象的标识抹掉，以便进行下一次垃圾回收操作</p>
+<h5 id="2-2-3-标记清除存在的问题"><a href="#2-2-3-标记清除存在的问题" class="headerlink" title="2.2.3 标记清除存在的问题"></a>2.2.3 标记清除存在的问题</h5><p>标记-清除算法的比较大的缺点就是垃圾收集后有可能会造成大量的内存碎片，其次由于需要遍历的内存节点较多时，每次回收都将花费时间在遍历节点过程中</p>
+<h5 id="2-2-4-注意事项"><a href="#2-2-4-注意事项" class="headerlink" title="2.2.4 注意事项"></a>2.2.4 注意事项</h5><ul>
+<li>collector </li>
+</ul>
+<p>垃圾收集器</p>
+<ul>
+<li>mutator</li>
+</ul>
+<p>指的是垃圾收集器之外的部分（比如当前的应用程序，可以直接被mutator直接访问到的对象，一般指静态—-&gt;全局变量）</p>
+<ul>
+<li>可到达对象</li>
+</ul>
+<p>所谓的可到达对象就是从根对象开始遍历，可以访问到的对象，也就是mutator(应用程序)正在使用的对象</p>
+<h4 id="2-3-分代回收"><a href="#2-3-分代回收" class="headerlink" title="2.3 分代回收"></a>2.3 分代回收</h4><ul>
+<li>由于嵌套引用无法被回收（分层，打标签）</li>
+</ul>
+<h5 id="2-3-1-核心思想"><a href="#2-3-1-核心思想" class="headerlink" title="2.3.1 核心思想"></a>2.3.1 核心思想</h5><p>分代是一种典型的以空间换时间的技术</p>
+<p>这种思想简单点说就是：对象存在时间越长，越可能不是垃圾，应该越少去收集</p>
+<p>分代是解决内存遍历需要太久时间而诞生的解决方案</p>
+<h5 id="2-3-2-分代回收的好处"><a href="#2-3-2-分代回收的好处" class="headerlink" title="2.3.2 分代回收的好处"></a>2.3.2 分代回收的好处</h5><p>分代回收可以减少标记-清除机制所带来的额外操作</p>
+<p>分代就是将回收对象分成数个代（青年代，中年代，老年代），每个代都是一个链表（集合）。当青年代满时，将触发清理所有三代，执行标记清除动作。之后，当中年代满时，将会触发清理中年代，老年代；最后，老年代触发后只会清理自己</p>
+<p>老年代的存活时间是最长的</p>
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

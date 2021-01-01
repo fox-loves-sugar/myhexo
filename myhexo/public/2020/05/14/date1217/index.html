@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>钉钉机器人发送数据session储存问题解决</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="1 用户模块梳理1.1 注册我们在编写注册模块的时候，尤其是高负载的情况下，尽可能地不读库，会极大地提高我们的性能。可以采用唯一索引。
+1.2 登录在登录的时候，我们要有一个思想，单因子登录，双因子登录和三因子登录
+
+单因子登录：传统的验证用户名，密码这种机制不安全（密码为唯一登录，不安全）图片验证">
+  
+  
+  <meta property="og:title" content="钉钉机器人发送数据session储存问题解决"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        钉钉机器人发送数据session储存问题解决
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2020-05-14T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-05-14
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/session/">session</a>·<a href="/myhexo/tags/钉钉机器人/">钉钉机器人</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97%E6%A2%B3%E7%90%86"><span class="toc-text">1 用户模块梳理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E6%B3%A8%E5%86%8C"><span class="toc-text">1.1 注册</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E7%99%BB%E5%BD%95"><span class="toc-text">1.2 登录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E6%A8%A1%E5%9E%8B%E6%A2%B3%E7%90%86"><span class="toc-text">1.3 模型梳理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%80%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">2 所遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E8%AE%BE%E7%BD%AE%E9%92%89%E9%92%89%E6%9C%BA%E5%99%A8%E4%BA%BA%E9%97%AE%E9%A2%98"><span class="toc-text">2.1 设置钉钉机器人问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-session%E9%97%AE%E9%A2%98"><span class="toc-text">2.2 session问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BB%A3%E7%A0%81%E5%AE%9E%E4%BE%8B"><span class="toc-text">3 代码实例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Django%E7%AB%AF"><span class="toc-text">3.1 Django端</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1-views-py"><span class="toc-text">3.1.1 views.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-2-utils-py"><span class="toc-text">3.1.2 utils.py</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Vue%E7%AB%AF"><span class="toc-text">3.2 Vue端</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-1-Register-vue"><span class="toc-text">3.2.1 Register.vue</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-2-Login-vue"><span class="toc-text">3.2.2 Login.vue</span></a></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h3 id="1-用户模块梳理"><a href="#1-用户模块梳理" class="headerlink" title="1 用户模块梳理"></a>1 用户模块梳理</h3><h4 id="1-1-注册"><a href="#1-1-注册" class="headerlink" title="1.1 注册"></a>1.1 注册</h4><p>我们在编写注册模块的时候，尤其是高负载的情况下，尽可能地不读库，会极大地提高我们的性能。可以采用唯一索引。</p>
+<h4 id="1-2-登录"><a href="#1-2-登录" class="headerlink" title="1.2 登录"></a>1.2 登录</h4><p>在登录的时候，我们要有一个思想，单因子登录，双因子登录和三因子登录</p>
+<ul>
+<li>单因子登录：传统的验证用户名，密码这种机制不安全（密码为唯一登录，不安全）图片验证码</li>
+<li>双因子登录：需要东西来验证，识别（短信，邮件）</li>
+<li>三因子登录：滑块，面部识别，指纹验证</li>
+</ul>
+<h4 id="1-3-模型梳理"><a href="#1-3-模型梳理" class="headerlink" title="1.3 模型梳理"></a>1.3 模型梳理</h4><ul>
+<li>webhook 动向扩展</li>
+</ul>
+<p>整体思路就是，通过webhook把验证码发给机器人，机器人在钉钉端告诉用户这个码是多少，用户看到码，把码通过表单形式，然后django端作对比，判断是否登录成功。</p>
+<h3 id="2-所遇到的问题"><a href="#2-所遇到的问题" class="headerlink" title="2 所遇到的问题"></a>2 所遇到的问题</h3><h4 id="2-1-设置钉钉机器人问题"><a href="#2-1-设置钉钉机器人问题" class="headerlink" title="2.1 设置钉钉机器人问题"></a>2.1 设置钉钉机器人问题</h4><ul>
+<li>重要的地方（一）—&gt; 加签</li>
+</ul>
+<ul>
+<li>重要的地方（二）—&gt; 获取webhook</li>
+</ul>
+<h4 id="2-2-session问题"><a href="#2-2-session问题" class="headerlink" title="2.2 session问题"></a>2.2 session问题</h4><ul>
+<li><p>非常可气，postman调试十分正常，但是浏览器没有效果。</p>
+</li>
+<li><p>根据自己的理解，写了一个比较low的解决方案。</p>
+</li>
+<li><p>由于采取的是session存储，那就意味着，没有办法在获取完验证码，<code>request.session[&#39;key&#39;]=value</code> 的情况下，在下一个视图继续获取了。</p>
+</li>
+</ul>
+<h3 id="3-代码实例"><a href="#3-代码实例" class="headerlink" title="3 代码实例"></a>3 代码实例</h3><h4 id="3-1-Django端"><a href="#3-1-Django端" class="headerlink" title="3.1 Django端"></a>3.1 Django端</h4><ul>
+<li>settings里无需配置</li>
+</ul>
+<h5 id="3-1-1-views-py"><a href="#3-1-1-views-py" class="headerlink" title="3.1.1 views.py"></a>3.1.1 views.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib.auth.hashers <span class="keyword">import</span> make_password, check_password</span><br><span class="line"><span class="keyword">from</span> django.contrib.sessions.models <span class="keyword">import</span> Session</span><br><span class="line"><span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response</span><br><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br><span class="line"><span class="keyword">from</span> userapp.models <span class="keyword">import</span> UserModel</span><br><span class="line"><span class="keyword">from</span> userapp.utils <span class="keyword">import</span> create_token, message_code, dingding_robot</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RegisterView</span>(<span class="params">APIView</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        username = request.data.get(<span class="string">&#x27;username&#x27;</span>)</span><br><span class="line">        password = request.data.get(<span class="string">&#x27;password&#x27;</span>)</span><br><span class="line">        tel = request.data.get(<span class="string">&#x27;tel&#x27;</span>)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            user = UserModel.objects.create(username=username, password=make_password(password),tel=tel)</span><br><span class="line">            token = create_token(user)</span><br><span class="line">            <span class="keyword">return</span> Response(</span><br><span class="line">                &#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;注册成功&#x27;</span>, <span class="string">&#x27;code&#x27;</span>:<span class="number">200</span>, <span class="string">&#x27;token&#x27;</span>: token&#125;</span><br><span class="line">            )</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            print(<span class="string">&#x27;异常&#x27;</span>, e)</span><br><span class="line">            <span class="keyword">return</span> Response(</span><br><span class="line">                &#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;用户名或手机号重复&#x27;</span>, <span class="string">&#x27;code&#x27;</span>:<span class="number">400</span>&#125;</span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoginView</span>(<span class="params">APIView</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        num = request.data.get(<span class="string">&#x27;num&#x27;</span>)</span><br><span class="line">        username = request.data.get(<span class="string">&#x27;username&#x27;</span>)</span><br><span class="line">        password = request.data.get(<span class="string">&#x27;password&#x27;</span>)</span><br><span class="line">        get_key = request.data.get(<span class="string">&#x27;session_key&#x27;</span>)</span><br><span class="line">        user = UserModel.objects.<span class="built_in">filter</span>(username=username).first()</span><br><span class="line">        <span class="keyword">if</span> check_password(password, user.password):</span><br><span class="line">            session_data = Session.objects.get(pk=get_key).get_decoded()</span><br><span class="line">            num_get = session_data.get(<span class="string">&#x27;num&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> num == <span class="built_in">str</span>(num_get):</span><br><span class="line">                token = create_token(user)</span><br><span class="line">                <span class="keyword">return</span> Response(</span><br><span class="line">                    &#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;登录成功&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>, <span class="string">&#x27;token&#x27;</span>: token, <span class="string">&#x27;num&#x27;</span>:num&#125;</span><br><span class="line">                )</span><br><span class="line">        <span class="keyword">return</span> Response(</span><br><span class="line">            &#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;登录失败&#x27;</span>, <span class="string">&#x27;code&#x27;</span>: <span class="number">400</span>&#125;</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DingDingView</span>(<span class="params">APIView</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        num = message_code()</span><br><span class="line">        dingding_robot(num)</span><br><span class="line">        request.session[<span class="string">&#x27;num&#x27;</span>] = num</span><br><span class="line">        request.session.set_expiry(<span class="number">300</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> request.session.session_key:</span><br><span class="line">            request.session.create()</span><br><span class="line">        <span class="keyword">return</span> Response(</span><br><span class="line">            &#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;发送成功&#x27;</span>, <span class="string">&#x27;code&#x27;</span>:<span class="number">200</span>, <span class="string">&#x27;num&#x27;</span>:num, <span class="string">&#x27;session_key&#x27;</span>: request.session.session_key&#125;</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-1-2-utils-py"><a href="#3-1-2-utils-py" class="headerlink" title="3.1.2 utils.py"></a>3.1.2 utils.py</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> rest_framework_jwt.settings <span class="keyword">import</span> api_settings</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_token</span>(<span class="params">user</span>):</span></span><br><span class="line">    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER</span><br><span class="line">    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER</span><br><span class="line">    payload = jwt_payload_handler(user)</span><br><span class="line">    token = jwt_encode_handler(payload)</span><br><span class="line">    <span class="keyword">return</span> token</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">message_code</span>():</span></span><br><span class="line">    <span class="keyword">import</span> random</span><br><span class="line">    num = random.randint(<span class="number">100000</span>, <span class="number">999999</span>)</span><br><span class="line">    <span class="keyword">return</span> num</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dingding_robot</span>(<span class="params">num</span>):</span></span><br><span class="line">    <span class="keyword">import</span> time</span><br><span class="line">    <span class="keyword">import</span> hmac</span><br><span class="line">    <span class="keyword">import</span> hashlib</span><br><span class="line">    <span class="keyword">import</span> base64</span><br><span class="line">    <span class="keyword">import</span> urllib.parse</span><br><span class="line">    timestamp = <span class="built_in">str</span>(<span class="built_in">round</span>(time.time() * <span class="number">1000</span>))</span><br><span class="line">    secret = <span class="string">&#x27;SECc0cc53c0179ded46f9050ff40c8c767f2bd0f50a2e7255c1bc9afa014d246db2&#x27;</span></span><br><span class="line">    secret_enc = secret.encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    string_to_sign = <span class="string">&#x27;&#123;&#125;\n&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(timestamp, secret)</span><br><span class="line">    string_to_sign_enc = string_to_sign.encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()</span><br><span class="line">    sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))</span><br><span class="line">    <span class="keyword">import</span> requests, json  <span class="comment"># 导入依赖库</span></span><br><span class="line">    headers = &#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>&#125;  <span class="comment"># 定义数据类型</span></span><br><span class="line">    webhook = <span class="string">&#x27;https://oapi.dingtalk.com/robot/send?access_token=2c3730563856be4f9dfc1ed8cfa1e1789c6ec88ba4964782529d4b866f503d1a&amp;timestamp=&#123;&#125;&amp;sign=&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(timestamp,sign)</span><br><span class="line">    data = &#123;</span><br><span class="line">        <span class="string">&quot;msgtype&quot;</span>: <span class="string">&quot;text&quot;</span>,</span><br><span class="line">        <span class="string">&quot;text&quot;</span>: &#123;<span class="string">&quot;content&quot;</span>: num&#125;,</span><br><span class="line">        <span class="string">&quot;isAtAll&quot;</span>: <span class="literal">True</span>&#125;</span><br><span class="line">    res = requests.post(webhook, data=json.dumps(data), headers=headers)  <span class="comment"># 发送post请求</span></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-Vue端"><a href="#3-2-Vue端" class="headerlink" title="3.2 Vue端"></a>3.2 Vue端</h4><h5 id="3-2-1-Register-vue"><a href="#3-2-1-Register-vue" class="headerlink" title="3.2.1 Register.vue"></a>3.2.1 Register.vue</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div style&#x3D;&quot;margin-top:200px&quot;&gt;</span><br><span class="line">        &lt;center&gt;&lt;h1 style&#x3D;&quot;margin-top:50px&quot;&gt;注&amp;emsp;册&lt;&#x2F;h1&gt;&lt;&#x2F;center&gt;</span><br><span class="line">        &lt;div style&#x3D;&quot;margin:0 auto;width:500px;height:200px&quot;&gt;</span><br><span class="line">            用户名：</span><br><span class="line">                &lt;a-input placeholder&#x3D;&quot;input your username&quot; style&#x3D;&quot;width:300px&quot; v-model&#x3D;&quot;username&quot;&#x2F;&gt;</span><br><span class="line">            &lt;br&gt;</span><br><span class="line">            &lt;br&gt;</span><br><span class="line">            密&amp;ensp;&amp;ensp;码：</span><br><span class="line">                &lt;a-input-password placeholder&#x3D;&quot;input your password&quot; style&#x3D;&quot;width:300px&quot; v-model&#x3D;&quot;password&quot;&#x2F;&gt;</span><br><span class="line">                &lt;br&gt;</span><br><span class="line">                &lt;br&gt;</span><br><span class="line">            手机号：</span><br><span class="line">                &lt;a-input placeholder&#x3D;&quot;input your telphone&quot; style&#x3D;&quot;width:300px&quot; v-model&#x3D;&quot;tel&quot;&#x2F;&gt;</span><br><span class="line">                &lt;br&gt;</span><br><span class="line">                &lt;br&gt;</span><br><span class="line">              &lt;a-button type&#x3D;&quot;primary&quot; @click&#x3D;&quot;register&quot;&gt;注册&lt;&#x2F;a-button&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; user_register &#125; from &#39;@&#x2F;http&#x2F;apis&#39;</span><br><span class="line">export default &#123;</span><br><span class="line">    data() &#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            username:&#39;&#39;,</span><br><span class="line">            password:&#39;&#39;,</span><br><span class="line">            tel:&#39;&#39;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">        register()&#123;</span><br><span class="line">            let register_data &#x3D; &#123;</span><br><span class="line">                &#39;username&#39;:this.username,</span><br><span class="line">                &#39;password&#39;: this.password,</span><br><span class="line">                &#39;tel&#39;:this.tel</span><br><span class="line">            &#125;</span><br><span class="line">            user_register(register_data).then(res&#x3D;&gt;&#123;</span><br><span class="line">                &#x2F;&#x2F; 已生成token，可以免登陆直接跳主页的，后续写</span><br><span class="line">                res.code &#x3D;&#x3D; 200?alert(&#39;注册成功，即将跳转登录界面&#39;)&amp;this.$router.push(&#39;&#x2F;login&#39;):alert(&#39;请保证用户名和手机号唯一哦&#39;)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    created() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-2-2-Login-vue"><a href="#3-2-2-Login-vue" class="headerlink" title="3.2.2 Login.vue"></a>3.2.2 Login.vue</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div style&#x3D;&quot;margin-top:200px&quot;&gt;</span><br><span class="line">        &lt;center&gt;&lt;h1 style&#x3D;&quot;margin-top:50px&quot;&gt;登&amp;emsp;录&lt;&#x2F;h1&gt;&lt;&#x2F;center&gt;</span><br><span class="line">        &lt;div style&#x3D;&quot;margin:0 auto;width:500px;height:200px&quot;&gt;</span><br><span class="line">            用户名：</span><br><span class="line">                &lt;a-input placeholder&#x3D;&quot;input your username&quot; style&#x3D;&quot;width:300px&quot; v-model&#x3D;&quot;username&quot;&#x2F;&gt;</span><br><span class="line">            &lt;br&gt;</span><br><span class="line">            &lt;br&gt;</span><br><span class="line">            密&amp;ensp;&amp;ensp;码：</span><br><span class="line">                &lt;a-input-password placeholder&#x3D;&quot;input your password&quot; style&#x3D;&quot;width:300px&quot; v-model&#x3D;&quot;password&quot;&#x2F;&gt;</span><br><span class="line">                &lt;br&gt;</span><br><span class="line">                &lt;br&gt;</span><br><span class="line">          &lt;p&gt;</span><br><span class="line">              &lt;a-input type&#x3D;&quot;text&quot; v-model&#x3D;&quot;message_code&quot;  style&#x3D;&quot;width:200px&quot;&#x2F;&gt;&amp;emsp;&lt;a-button type&#x3D;&quot;primary&quot;  @click&#x3D;&quot;getMessageCode&quot;&gt;钉钉获取验证码&lt;&#x2F;a-button&gt;</span><br><span class="line">          &lt;&#x2F;p&gt;</span><br><span class="line">              &lt;a-button type&#x3D;&quot;primary&quot; @click&#x3D;&quot;login&quot;&gt;登录&lt;&#x2F;a-button&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; get_message_code, user_login &#125; from &#39;@&#x2F;http&#x2F;apis&#39;</span><br><span class="line">export default &#123;</span><br><span class="line">    data() &#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            username:&#39;&#39;,</span><br><span class="line">            password:&#39;&#39;,</span><br><span class="line">            message_code:&#39;&#39;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">        &#x2F;&#x2F; 获取验证码</span><br><span class="line">        getMessageCode()&#123;</span><br><span class="line">            get_message_code().then(res&#x3D;&gt;&#123;</span><br><span class="line">                console.log(res)</span><br><span class="line">                res.code &#x3D;&#x3D; 200?alert(&#39;获取验证码成功&#39;)&amp;sessionStorage.setItem(&#39;session_key&#39;, res.session_key):alert(&#39;失败失败&#39;)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;,</span><br><span class="line">        &#x2F;&#x2F; 登录</span><br><span class="line">        login()&#123;</span><br><span class="line">            let user_info &#x3D; &#123;</span><br><span class="line">                &#39;username&#39;:this.username,</span><br><span class="line">                &#39;password&#39;:this.password,</span><br><span class="line">                &#39;num&#39;:this.message_code,</span><br><span class="line">                &#39;session_key&#39;: sessionStorage.getItem(&#39;session_key&#39;)</span><br><span class="line">            &#125;</span><br><span class="line">            user_login(user_info).then(</span><br><span class="line">                res&#x3D;&gt;&#123;</span><br><span class="line">                   console.log(res) </span><br><span class="line">                   res.code &#x3D;&#x3D; 200?alert(&#39;登录成功&#39;):alert(&#39;登录失败&#39;)</span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    created() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

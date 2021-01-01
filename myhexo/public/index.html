@@ -1,0 +1,685 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>狐狸大大爱吃糖的博客</title>
+  <meta name="author" content="狐 狸 大 大">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <nav class="navbar">
+  <div class="nav-container">
+  <div class="nav navbar-nav navbar-left">
+    <div class="navbar-header">
+      <a href="/myhexo/" class="navbar-brand">XXX</a>
+    </div>
+    
+
+  </div>
+  <div id="site_search" class="">
+  <input type="text" id="local-search-input" name="q" placeholder="search" class="form-control"/>
+</div>
+<div id="local-search-result"></div>
+
+
+  <div class="nav navbar-nav navbar-right">
+    <div class="dropdown">
+      <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        <svg class="i-link" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+          <path d="M18 8 C18 8 24 2 27 5 30 8 29 12 24 16 19 20 16 21 14 17 M14 24 C14 24 8 30 5 27 2 24 3 20 8 16 13 12 16 11 18 15"></path>
+        </svg>
+      </a>
+      <base href="/myhexo/">
+      <ul class="dropdown-content">
+        
+          <div>
+            <a href="/links.html">
+        links
+      </a>
+    </div>
+     
+          <div>
+            <a href="https://github.com/XXX/">
+        Github
+      </a>
+    </div>
+     
+          <div>
+            <a href="/rss2.xml">
+        rss
+      </a>
+    </div>
+     
+    </ul>
+    </div>
+    <div class="archives"><a href="/myhexo/archives">
+      <svg class="i-archive" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+        <path d="M4 10 L4 28 28 28 28 10 M2 4 L2 10 30 10 30 4 Z M12 15 L20 15"></path>
+      </svg>
+    </a></div>
+  </div>
+  </div>
+</nav>
+
+<ul class="posts">
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/12/26/date1229/">
+            分布式锁
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 引言
+思考：高并发情况，会不会出现问题？
+
+1234567891011121314from django.db import connection# 锁的使用def testlock(request):    res = User.ob
+  
+  <a href="/myhexo/2020/12/26/date1229/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-12-26T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-26
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/优惠分布式锁，redis/">优惠分布式锁，redis</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/12/25/date1228/">
+            排行榜
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 前言最早的排行榜，起源于在魔兽世界游戏的拍卖行，常规数据库mysql无法实现这一功能，但是redis可以解决。
+redis的有序集合，可以实现这一功能。有序集合的底层是哈希（可以去重）和链表（指针，指向下一个元素的内存地址，方便插入）的
+  
+  <a href="/myhexo/2020/12/25/date1228/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-12-25T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-25
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/redis/">redis</a>·<a href="/myhexo/tags/二维码/">二维码</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/12/25/date1228s/">
+            优惠券
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 优惠券
+充值以及充值成功之间要有优惠券
+
+1.1 生成随机码123456789101112131415161718import randomimport stringcode = string.digits + string.ascii
+  
+  <a href="/myhexo/2020/12/25/date1228s/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-12-25T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-25
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/优惠券/">优惠券</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/12/24/date1226/">
+            微信三方支付+二维码生成
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    代码实例
+前言
+
+主要介绍了微信小程序内部支付的流程，然而实际上微信小程序有一定的局限性，也就是用户范围仅限于小程序内部生态圈，在生活中真正具有广泛性、高效性、使用方便性的支付方式还得是扫码支付，扫码的优点在于推广成本低，上至钓鱼台国宾馆，
+  
+  <a href="/myhexo/2020/12/24/date1226/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-12-24T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-24
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/三方支付/">三方支付</a>·<a href="/myhexo/tags/微信支付/">微信支付</a>·<a href="/myhexo/tags/二维码/">二维码</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/12/23/date1225/">
+            payPal跨境支付
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    三方支付前言
+一旦回调不成功支付宝不光用支付id可以查询支付状态，也可以用订单id查询
+微信支付为什么要有钱包
+为了解耦（减少耦合度，银行对接充值，购买逻辑和钱包结合，下方三个都改成充值业务，简化操作）
+
+
+与支付宝，微信相比，Paypal
+  
+  <a href="/myhexo/2020/12/23/date1225/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-12-23T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-23
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/paypal/">paypal</a>·<a href="/myhexo/tags/三方支付/">三方支付</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/12/21/date1224/">
+            异步底层代码实现邮件发送
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 栈和队列1.1 队列1234567891011121314151617181920class MyQueue:    # 默认继承object类，python3里面不需要写    def __init__(self):        #
+  
+  <a href="/myhexo/2020/12/21/date1224/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-12-21T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-21
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/异步/">异步</a>·<a href="/myhexo/tags/线程，协程/">线程，协程</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/12/12/date1215/">
+            Docker初识
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 安装 Docker1.1 环境搭建1.1.1 环境查看12root@dev:~# uname -r5.4.0-56-generic
+
+1.1.2 系统版本12345678910111213root@dev:etc# cat os-rel
+  
+  <a href="/myhexo/2020/12/12/date1215/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-12-12T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-12-12
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/docker/">docker</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/10/20/date1223/">
+            MongoDB + DWebSocket 实现聊天室
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 引入定时器
+celery中也有定时器，但实质上，底层认知如下
+
+1234567891011121314import timeimport requests	    def dojob():    requests.get(&#x27;h
+  
+  <a href="/myhexo/2020/10/20/date1223/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-10-20T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-10-20
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/websocket/">websocket</a>·<a href="/myhexo/tags/mongodb/">mongodb</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/10/18/date1222/">
+            MongoDB+Echarts+DWebSocket
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 MongoDB 在 Django中的配置方法1.1 全局配置
+settings中定义，和Mysql不冲突，但是在可视化工具中发现，数据库名字会多很多个下划线
+
+1.1.1 settings.py123456789101112131415
+  
+  <a href="/myhexo/2020/10/18/date1222/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-10-18T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-10-18
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/MongoDB/">MongoDB</a>·<a href="/myhexo/tags/Echarts/">Echarts</a>·<a href="/myhexo/tags/DWebSocket/">DWebSocket</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+    
+<li class="post-item">
+  
+  
+    <h1 class="index-title">
+        <a href="/myhexo/2020/09/07/date1221s/">
+            celery定时任务+redis有序集合实现实时访问
+        </a>
+    </h1>
+  
+
+
+  <div class="excerpt">
+  
+    1 概述1.1 项目理解
+数据冗余
+
+数据冗余是指数据之间的重复，也可以说是同一数据存储在不同数据文件中的现象。可以说增加数据的独立性和减少数据冗余是企业范围信息资源管理和大规模信息系统获得成功的前提条件。
+数据冗余或者信息冗余是生产、生活
+  
+  <a href="/myhexo/2020/09/07/date1221s/">
+    更多
+  </a>
+  </div>
+  <div class="index-meta">
+    <time datetime="2020-09-07T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-09-07
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/celery/">celery</a>·<a href="/myhexo/tags/redis/">redis</a>·<a href="/myhexo/tags/实时访问/">实时访问</a>
+
+
+  </div>
+</li>
+<hr>
+
+
+
+
+
+  
+</ul>
+<ul class="pager">
+    <span class="page-number current">1</span><a class="page-number" href="/myhexo/page/2/">2</a><a class="extend next" rel="next" href="/myhexo/page/2/">Next</a>
+</ul>
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

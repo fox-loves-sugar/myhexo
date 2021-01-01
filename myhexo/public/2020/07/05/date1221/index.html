@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>位运算+数据库两种方式实现权限操作</title>
+  <meta name="author" content="狐 狸 大 大">
+  <meta name="description" content="1 数据库实现权限操作
+既是管理又是超级管理员的需要五表关联
+
+1.1 四表联动1.2 表设计
+models.py
+
+12345678910111213141516171819202122232425262728293031323334353637# 权限系统四标关联：角色表、用户表、节点表、权限表">
+  
+  
+  <meta property="og:title" content="位运算+数据库两种方式实现权限操作"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="狐狸大大爱吃糖的博客"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/myhexo/atom.xml" title="狐狸大大爱吃糖的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/myhexo/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/myhexo/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/myhexo/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+    <div class="description">
+      &nbsp;爱枫林
+    </div>
+    
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        位运算+数据库两种方式实现权限操作
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2020-07-05T05:14:21.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2020-07-05
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/myhexo/tags/位运算/">位运算</a>·<a href="/myhexo/tags/权限/">权限</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E6%9D%83%E9%99%90%E6%93%8D%E4%BD%9C"><span class="toc-text">1 数据库实现权限操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E5%9B%9B%E8%A1%A8%E8%81%94%E5%8A%A8"><span class="toc-text">1.1 四表联动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="toc-text">1.2 表设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E6%89%80%E9%9C%80%E5%8F%82%E6%95%B0"><span class="toc-text">1.3 所需参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-middleware-py"><span class="toc-text">1.4 middleware.py</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-settings-py"><span class="toc-text">1.5 settings.py</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BD%8D%E8%BF%90%E7%AE%97%E5%AE%9E%E7%8E%B0%E6%9D%83%E9%99%90%E6%93%8D%E4%BD%9C"><span class="toc-text">2 二进制位运算实现权限操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E4%BD%8D%E8%BF%90%E7%AE%97%E5%89%8D%E8%A8%80"><span class="toc-text">2.1 位运算前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="toc-text">2.2 表设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-middleware-py"><span class="toc-text">2.3 middleware.py</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-settings-py"><span class="toc-text">2.4 settings.py</span></a></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h3 id="1-数据库实现权限操作"><a href="#1-数据库实现权限操作" class="headerlink" title="1 数据库实现权限操作"></a>1 数据库实现权限操作</h3><ul>
+<li>既是管理又是超级管理员的需要五表关联</li>
+</ul>
+<h4 id="1-1-四表联动"><a href="#1-1-四表联动" class="headerlink" title="1.1 四表联动"></a>1.1 四表联动</h4><h4 id="1-2-表设计"><a href="#1-2-表设计" class="headerlink" title="1.2 表设计"></a>1.2 表设计</h4><ul>
+<li>models.py</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 权限系统四标关联：角色表、用户表、节点表、权限表</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 角色表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RoleModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    description = models.CharField(max_length=<span class="number">100</span>, null=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;role_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用户表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    username = models.CharField(max_length=<span class="number">30</span>, unique=<span class="literal">True</span>, verbose_name=<span class="string">&#x27;唯一注册用户名&#x27;</span>)</span><br><span class="line">    password = models.CharField(max_length=<span class="number">256</span>)</span><br><span class="line">    role = models.ForeignKey(RoleModel, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;user_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 节点表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NodeModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    description = models.CharField(max_length=<span class="number">100</span>, null=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;node_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 权限表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Authority</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    role_id = models.ForeignKey(RoleModel, on_delete=models.CASCADE)</span><br><span class="line">    node_id = models.ForeignKey(NodeModel, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;authority&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-所需参数"><a href="#1-3-所需参数" class="headerlink" title="1.3 所需参数"></a>1.3 所需参数</h4><ul>
+<li>role.id（用户角色id）</li>
+<li>type（前端节点类型）</li>
+</ul>
+<h4 id="1-4-middleware-py"><a href="#1-4-middleware-py" class="headerlink" title="1.4 middleware.py"></a>1.4 middleware.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.utils.deprecation <span class="keyword">import</span> MiddlewareMixin</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --------------------------------------四表联合判断权限 middleware</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChooseMiddleWare</span>(<span class="params">MiddlewareMixin</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        path = request.path_info</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> (<span class="string">&#x27;/user/test/&#x27;</span>):</span><br><span class="line">            user_info = decodeToken(request)</span><br><span class="line">            role_id = user_info.get(<span class="string">&#x27;role_id&#x27;</span>)</span><br><span class="line">            node_id = Authority.objects.<span class="built_in">filter</span>(role_id_id=role_id).first().node_id_id</span><br><span class="line">            <span class="comment"># 根据前端设置的传递类型来选择</span></span><br><span class="line">            t = request.GET.get(<span class="string">&#x27;type&#x27;</span>)</span><br><span class="line">            <span class="comment"># t ---------------&gt; str</span></span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">int</span>(t) == node_id:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;拦截&#x27;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-settings-py"><a href="#1-5-settings-py" class="headerlink" title="1.5 settings.py"></a>1.5 settings.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">&#x27;django.middleware.security.SecurityMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders.middleware.CorsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.common.CommonMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># mysql middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMysqlMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># redis middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoRedisMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># mongo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMongoMiddleWare&#x27;，</span></span><br><span class="line">    <span class="comment"># userinfo middleware</span></span><br><span class="line">    <span class="string">&#x27;userapp.middlewares.ChooseMiddleWare&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWareB&#x27;</span></span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-二进制位运算实现权限操作"><a href="#2-二进制位运算实现权限操作" class="headerlink" title="2 二进制位运算实现权限操作"></a>2 二进制位运算实现权限操作</h3><h4 id="2-1-位运算前言"><a href="#2-1-位运算前言" class="headerlink" title="2.1 位运算前言"></a>2.1 位运算前言</h4><ul>
+<li><p>十进制换成二进制，bin(10)           ————————&gt;           ob1010</p>
+</li>
+<li><p>python中用 0b表示二进制。逢 2 进 1</p>
+</li>
+<li><p>0b010 只有第二个有权限</p>
+</li>
+<li><p>一样就是1， 不一样就是0</p>
+</li>
+<li><p>django内的操作都是二进制流的操作</p>
+</li>
+<li><p>位运算权限，采用的是内置节点！</p>
+</li>
+<li><p>位运算和科学计算相比，位运算性能更好！</p>
+</li>
+</ul>
+<p>0b001 &amp; 0b010</p>
+<blockquote>
+<p>0</p>
+</blockquote>
+<p>0b001 &amp; 0b001</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<p>100 &amp; 1</p>
+<blockquote>
+<p>0</p>
+</blockquote>
+<p>101 &amp; 1</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<p>0b10 &amp; 0b01</p>
+<blockquote>
+<p>0</p>
+</blockquote>
+<p>0b11 &amp; 0b01</p>
+<blockquote>
+<p>1</p>
+</blockquote>
+<h4 id="2-2-表设计"><a href="#2-2-表设计" class="headerlink" title="2.2 表设计"></a>2.2 表设计</h4><ul>
+<li>只需要两张表</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 角色表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RoleModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    description = models.CharField(max_length=<span class="number">100</span>, null=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;role_model&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用户表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserModel</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    username = models.CharField(max_length=<span class="number">30</span>, unique=<span class="literal">True</span>, verbose_name=<span class="string">&#x27;唯一注册用户名&#x27;</span>)</span><br><span class="line">    password = models.CharField(max_length=<span class="number">256</span>)</span><br><span class="line">    role = models.ForeignKey(RoleModel, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">&#x27;user_model&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-middleware-py"><a href="#2-3-middleware-py" class="headerlink" title="2.3 middleware.py"></a>2.3 middleware.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 中间件---------------------------------------------------------------------------------</span></span><br><span class="line"><span class="keyword">from</span> django.utils.deprecation <span class="keyword">import</span> MiddlewareMixin</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChooseMiddleWareB</span>(<span class="params">MiddlewareMixin</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        path = request.path_info</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> (<span class="string">&#x27;/user/test/&#x27;</span>):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 这里设置位运算，默认权限对应关系是      role_id   拥有权限   权限id  ? 这样只能比对，做不了增值，可以倒过来想！</span></span><br><span class="line">            <span class="comment">#                                    1 ----------------- 1  0b100</span></span><br><span class="line">            <span class="comment">#                                    2 ----------------- 2  0b010</span></span><br><span class="line">            <span class="comment">#                                    3 ----------------- 3  0b001</span></span><br><span class="line">            <span class="comment"># 这里我想考虑一个角色多个权限的设置</span></span><br><span class="line">            <span class="comment"># 如果一个角色同时拥有两个或三个（此次设置三个权限）呢？存在什么关系？（可以进行权限叠加啊，后续研究）,利用循环，看多少个权限？</span></span><br><span class="line">            <span class="comment">#   role_id         拥有权限        权限id</span></span><br><span class="line">            <span class="comment">#      1                            1     0b001             1</span></span><br><span class="line">            <span class="comment">#      1                            2     0b010 （+1）       2</span></span><br><span class="line">            <span class="comment">#      1                            1,2   0b011 （+2)        3</span></span><br><span class="line">            <span class="comment">#      1                            3     0b100 （+3）       4</span></span><br><span class="line">            <span class="comment">#      1                            1,3   0b101 （+4）       5</span></span><br><span class="line">            <span class="comment">#      1                            2,3   0b110 （+5）       6</span></span><br><span class="line">            <span class="comment">#      1                           1,2,3  0b111 （+6）       7</span></span><br><span class="line">            <span class="comment">#  所以给用户设定权限就可以了，这里给用户设定权限，角色1 全有 则为7， 角色2 有12权限 则为3， 角色3 只有第三个权限，则为4</span></span><br><span class="line">            <span class="built_in">type</span> = <span class="built_in">int</span>(request.GET.get(<span class="string">&#x27;type&#x27;</span>))</span><br><span class="line">            user_info = decodeToken(request)</span><br><span class="line">            print(user_info)</span><br><span class="line">            role_id = user_info.get(<span class="string">&#x27;role_id&#x27;</span>)</span><br><span class="line">            <span class="comment"># 角色1 拥有权限</span></span><br><span class="line">            <span class="comment"># first_permision = 0b111</span></span><br><span class="line">            <span class="comment"># # 角色2 拥有权限</span></span><br><span class="line">            <span class="comment"># second_permision = 0b011</span></span><br><span class="line">            <span class="comment"># # 角色3 拥有权限</span></span><br><span class="line">            <span class="comment"># third_permision = 0b100</span></span><br><span class="line">            <span class="comment"># 相加就能看到共有几种权限啦！</span></span><br><span class="line">            <span class="comment"># 我们给角色1设定有三种权限，角色2设定有一，二两种权限，角色3设定只有第三种权限</span></span><br><span class="line">            permision_dic = &#123;<span class="number">1</span>: <span class="number">0b111</span>, <span class="number">2</span>: <span class="number">0b011</span>, <span class="number">3</span>: <span class="number">0b100</span>&#125;</span><br><span class="line">            type_dic = &#123;<span class="number">1</span>: <span class="number">0b001</span>, <span class="number">2</span>: <span class="number">0b010</span>, <span class="number">3</span>: <span class="number">0b100</span>&#125;</span><br><span class="line">            <span class="keyword">if</span> type_dic[<span class="built_in">type</span>] &amp; permision_dic[role_id] == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;没有权限访问&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-settings-py"><a href="#2-4-settings-py" class="headerlink" title="2.4 settings.py"></a>2.4 settings.py</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">&#x27;django.middleware.security.SecurityMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders.middleware.CorsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.common.CommonMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;</span>,</span><br><span class="line">    <span class="comment"># mysql middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMysqlMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># redis middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoRedisMiddleWare&#x27;,</span></span><br><span class="line">    <span class="comment"># mongo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.VisitInfoMongoMiddleWare&#x27;，</span></span><br><span class="line">    <span class="comment"># userinfo middleware</span></span><br><span class="line">    <span class="comment"># &#x27;userapp.middlewares.ChooseMiddleWare&#x27;,</span></span><br><span class="line">    <span class="string">&#x27;userapp.middlewares.ChooseMiddleWareB&#x27;</span></span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © XXX 2016-2020
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/myhexo/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/myhexo/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

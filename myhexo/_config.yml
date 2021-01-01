@@ -100,7 +100,7 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 
 # theme: coney
-theme: hexo-theme-matery-master
+theme: hexo-theme-pln
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

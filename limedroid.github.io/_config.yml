@@ -103,6 +103,6 @@ theme: landscape
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: git
-  repository: https://github.com/fox-loves-sugar/myhexo.git
-  branch: master
+  type: git 
+  repository: https://github.com/fox-loves-sugar/myhexo.git 
+  branch: master 
